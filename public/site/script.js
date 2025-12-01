@@ -5,6 +5,47 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', async function () {
     
+    // --- Load Global Settings (Logo, Contact Info) ---
+    async function loadSettings() {
+        try {
+            const { data } = await supabase.from('settings').select('data').eq('id', 1).single();
+            if (data && data.data) {
+                const s = data.data;
+                
+                // Update Logo
+                const logo = document.getElementById('logo');
+                if (logo && s.logo) logo.src = s.logo;
+                
+                // Update Top Bar
+                const topPhone = document.getElementById('top-phone');
+                if (topPhone && s.phone) topPhone.innerText = `اتصل بنا: ${s.phone}`;
+                
+                const topEmail = document.getElementById('top-email');
+                if (topEmail && s.email) topEmail.innerText = `البريد الإلكتروني: ${s.email}`;
+
+                // Update Footer Socials
+                const footerFb = document.getElementById('footer-fb');
+                if (footerFb && s.facebook) footerFb.href = s.facebook;
+
+                const footerInsta = document.getElementById('footer-insta');
+                if (footerInsta && s.instagram) footerInsta.href = s.instagram;
+
+                // Update Contact Page Details (if present)
+                const contactPhone = document.getElementById('contact-phone');
+                if (contactPhone && s.phone) contactPhone.innerHTML = `<strong>الهاتف:</strong> ${s.phone}`;
+
+                const contactEmail = document.getElementById('contact-email');
+                if (contactEmail && s.email) contactEmail.innerHTML = `<strong>البريد الإلكتروني:</strong> ${s.email}`;
+
+                const contactAddress = document.getElementById('contact-address');
+                if (contactAddress && s.address) contactAddress.innerHTML = `<strong>العنوان:</strong> ${s.address}`;
+            }
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    }
+    loadSettings();
+
     // --- 1. Inject Modal HTML into the Body ---
     const modalHTML = `
         <div id="details-modal" class="modal">
@@ -30,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const modalText = document.getElementById('modal-text');
 
     // Close on X click
-    closeBtn.onclick = () => modal.style.display = "none";
+    if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
     
     // Close on outside click
     window.onclick = (e) => {
@@ -112,7 +153,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 items.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'form-item';
-                    // Inline styles removed. Using 'form-item' CSS class instead for responsiveness.
                     li.innerHTML = `
                         <span class="form-name">${item.title}</span>
                         <a href="${item.file_url}" class="download-button" target="_blank" download>تحميل</a>
@@ -246,7 +286,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 const albumContainer = document.createElement('div');
                 albumContainer.className = 'album-container';
-                // Inline styles removed. Using 'album-container' CSS class.
 
                 const albumTitle = document.createElement('h2');
                 albumTitle.className = 'album-title';
@@ -273,7 +312,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             </div>
                         `;
                         galleryItem.removeAttribute('data-lightbox');
-                        galleryItem.target = "_blank"; // Open videos in new tab
+                        galleryItem.target = "_blank"; 
                     } else {
                         galleryItem.innerHTML = `
                             <img src="${item.url}" alt="${item.description || ''}" style="width:100%; height:100%; object-fit:cover;">
@@ -297,6 +336,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (menuToggle && nav) {
         menuToggle.addEventListener('click', () => {
             nav.classList.toggle('active');
+            if (nav.classList.contains('active')) {
+                nav.style.display = 'block';
+            } else {
+                if (window.innerWidth <= 768) nav.style.display = 'none';
+            }
         });
     }
 
