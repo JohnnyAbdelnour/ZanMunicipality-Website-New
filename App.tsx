@@ -9,7 +9,8 @@ import {
   LogOut, 
   Menu, 
   X,
-  Image as ImageIcon
+  Image as ImageIcon,
+  ExternalLink
 } from 'lucide-react';
 
 // Import Pages
@@ -77,7 +78,7 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
             </div>
         </div>
 
-        <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-5rem)]">
+        <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-5rem)] flex flex-col">
           <div className="mb-6">
             <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">القائمة الرئيسية</p>
             <SidebarItem 
@@ -120,7 +121,18 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
               label="الإعدادات" 
               active={location.pathname === '/settings'} 
             />
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors mt-4">
+          </div>
+
+          <div className="mt-auto pt-4 border-t border-gray-100">
+             <a 
+               href="site/index.html" 
+               target="_blank"
+               className="flex items-center gap-3 px-4 py-3 text-primary-700 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors mb-2"
+             >
+              <ExternalLink size={20} />
+              <span className="font-semibold">زيارة الموقع</span>
+            </a>
+            <button className="w-full flex items-center gap-3 px-4 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
               <LogOut size={20} />
               <span className="font-semibold">تسجيل الخروج</span>
             </button>

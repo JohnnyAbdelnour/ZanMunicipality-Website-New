@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بلدية زان - الموقع الرسمي</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <span>اتصل بنا: 96136710777+</span>
+            <span>|</span>
+            <span>البريد الإلكتروني: zenmunicipality@gmail.com</span>
+        </div>
+    </div>
+    <header>
+        <div class="container">
+            <a href="#" class="logo-container">
+                <img src="https://picsum.photos/60/60" alt="شعار بلدية زان" id="logo" style="border-radius:50%">
+                <h1>بلدية زان</h1>
+            </a>
+            <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="#">عن البلدية</a></li>
+                    <li><a href="#">الخدمات الإدارية</a></li>
+                    <li><a href="#">الاعلانات</a></li>
+                    <li><a href="#">الأخبار والنشاطات</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="slider-container">
+        <div class="slides">
+            <div class="slide active">
+                <img src="https://picsum.photos/id/1018/1200/600" alt="Slider Image 1">
+                <div class="slide-caption">
+                    <h2>مرحباً بكم في بلدية زان</h2>
+                    <p>نعمل من أجل مستقبل أفضل لبلدتنا.</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://picsum.photos/id/1015/1200/600" alt="Slider Image 2">
+                <div class="slide-caption">
+                    <h2>مشاريعنا الحالية</h2>
+                    <p>اكتشفوا أحدث المشاريع التي نعمل عليها.</p>
+                </div>
+            </div>
+        </div>
+        <button class="prev-slide">&#10094;</button>
+        <button class="next-slide">&#10095;</button>
+        <div class="slider-dots">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+        </div>
+    </section>
+
+    <main>
+        <div class="container">
+            <section class="welcome-section">
+                <h2>أهلاً بكم في الموقع الرسمي لبلدية زان</h2>
+                <p>نعمل لخدمتكم وتطوير مدينتنا. هنا يمكنكم العثور على معلومات حول خدماتنا ومشاريعنا وأخبارنا.</p>
+            </section>
+
+            <section class="quick-links">
+                 <h3>روابط سريعة</h3>
+                 <div class="links-container">
+                    <a href="#" class="link-box">الخدمات الإدارية</a>
+                    <a href="#" class="link-box">الاعلانات</a>
+                    <a href="#" class="link-box">المشاريع</a>
+                    <a href="#" class="link-box">الشكاوى والاقتراحات</a>
+                 </div>
+            </section>
+
+            <section class="card-section">
+                <a href="#" class="section-title-link"><h2 class="section-title">الاعلانات</h2></a>
+                <div class="cards-container" id="latest-announcements-container">
+                    <p style="text-align:center; width:100%;">جاري تحميل البيانات...</p>
+                </div>
+            </section>
+
+            <section class="card-section">
+                <a href="#" class="section-title-link"><h2 class="section-title">أبرز الأخبار</h2></a>
+                <div class="cards-container" id="latest-news-container">
+                     <p style="text-align:center; width:100%;">جاري تحميل البيانات...</p>
+                </div>
+            </section>
+
+            <section class="card-section">
+                <a href="#" class="section-title-link"><h2 class="section-title">المشاريع</h2></a>
+                <div class="cards-container" id="latest-projects-container">
+                     <p style="text-align:center; width:100%;">جاري تحميل البيانات...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>عن بلدية زان</h4>
+                    <p>نسعى لتكون بلدية زان نموذجًا في التطور والخدمة المجتمعية.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>روابط مهمة</h4>
+                    <ul>
+                        <li><a href="#" target="_blank">الصليب الاحمر اللبناني</a></li>
+                        <li><a href="#" target="_blank">أوجيرو</a></li>
+                        <li><a href="#" target="_blank">وزارة الداخلية والبلديات</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تابعونا</h4>
+                    <div class="social-media">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة &copy; 2025 بلدية زان.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
