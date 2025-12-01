@@ -52,17 +52,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             const title = item.title;
             const date = item.date;
             const desc = item.description || '';
+            const shortDesc = desc.length > 100 ? desc.substring(0, 100) + '...' : desc;
             
             const card = document.createElement('div');
             card.className = 'card';
             
-            // NOTE: Description is removed from here as per requirements.
-            // It will only be shown in the modal.
             card.innerHTML = `
                 <img src="${image}" alt="${title}">
                 <div class="card-content">
                     <h3>${title}</h3>
                     <p class="card-date">${date}</p>
+                    <p style="font-size:14px; color:#555; margin-bottom:15px; display:none;">${shortDesc}</p>
                     <button class="card-button">إقرأ المزيد</button>
                 </div>
             `;
@@ -112,10 +112,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 items.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'form-item';
-                    li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;';
+                    // Inline styles removed. Using 'form-item' CSS class instead for responsiveness.
                     li.innerHTML = `
-                        <span class="form-name" style="font-size: 18px;">${item.title}</span>
-                        <a href="${item.file_url}" class="download-button" target="_blank" download style="background: #009688; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; transition: background 0.3s;">تحميل</a>
+                        <span class="form-name">${item.title}</span>
+                        <a href="${item.file_url}" class="download-button" target="_blank" download>تحميل</a>
                     `;
                     formsList.appendChild(li);
                 });
@@ -222,7 +222,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (projectsContainer && allNews) {
             const projectItems = allNews.filter(n => n.category === 'projects');
             renderCards(projectsContainer, projectItems, 'projects');
-            // Assuming projects might reuse news-search-input or have their own
             const projectSearch = document.getElementById('projects-search-input'); 
             if(projectSearch) setupSearch('projects-search-input', projectItems, projectsContainer, 'projects');
         }
@@ -247,39 +246,32 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 const albumContainer = document.createElement('div');
                 albumContainer.className = 'album-container';
-                albumContainer.style.marginBottom = '50px';
+                // Inline styles removed. Using 'album-container' CSS class.
 
                 const albumTitle = document.createElement('h2');
                 albumTitle.className = 'album-title';
-                albumTitle.style.cssText = 'font-size: 28px; color: #00796B; border-bottom: 2px solid #009688; padding-bottom: 10px; margin-bottom: 30px;';
                 albumTitle.textContent = album.title;
                 albumContainer.appendChild(albumTitle);
 
                 const itemsContainer = document.createElement('div');
                 itemsContainer.className = 'gallery-items-container';
-                itemsContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;';
 
                 album.items.forEach(item => {
                     const galleryItem = document.createElement('a');
                     galleryItem.href = item.url;
                     galleryItem.className = 'gallery-item';
-                    galleryItem.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; height: 220px;';
                     
                     // Lightbox attributes
                     galleryItem.setAttribute('data-lightbox', `album-${album.id}`);
                     galleryItem.setAttribute('data-title', item.description || album.title);
 
                     if (item.type === 'video') {
-                        // For video, usually lightbox libraries need specific handling or just link to file
-                        // Simple fallback: render a video tag or a placeholder image with play icon
                          galleryItem.innerHTML = `
                             <video src="${item.url}" style="width:100%; height:100%; object-fit:cover;"></video>
                             <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 5px black;">
                                 <i class="fas fa-play-circle"></i>
                             </div>
                         `;
-                        // Remove lightbox attr for video if library doesn't support it easily, 
-                        // or let it open raw. Here we keep it simple.
                         galleryItem.removeAttribute('data-lightbox');
                         galleryItem.target = "_blank"; // Open videos in new tab
                     } else {
@@ -305,11 +297,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (menuToggle && nav) {
         menuToggle.addEventListener('click', () => {
             nav.classList.toggle('active');
-            if (nav.classList.contains('active')) {
-                nav.style.display = 'block';
-            } else {
-                if (window.innerWidth <= 768) nav.style.display = 'none';
-            }
         });
     }
 
