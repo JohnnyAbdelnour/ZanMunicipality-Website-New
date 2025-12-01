@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Album, MediaItem } from '../types';
 import ImageUploader from '../components/ImageUploader';
+import MultiMediaUploader, { UploadedFile } from '../components/MultiMediaUploader';
 import { supabase } from '../lib/supabase';
 
 const GalleryManager: React.FC = () => {
@@ -19,12 +20,16 @@ const GalleryManager: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentView, setCurrentView] = useState<'list' | 'detail'>('list');
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  
+  // Modals state
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+  
+  // Forms state
   const [albumForm, setAlbumForm] = useState({ title: '', coverUrl: '' });
-  const [mediaForm, setMediaForm] = useState<{ type: 'photo' | 'video', url: string, description: string }>({ 
-    type: 'photo', url: '', description: '' 
-  });
+  const [newMediaFiles, setNewMediaFiles] = useState<UploadedFile[]>([]);
+  const [commonDescription, setCommonDescription] = useState('');
+  
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -99,31 +104,37 @@ const GalleryManager: React.FC = () => {
 
   const handleAddMedia = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedAlbum) return;
+    if (!selectedAlbum || newMediaFiles.length === 0) return;
     setIsSaving(true);
+
+    const payloads = newMediaFiles.map(file => ({
+        album_id: selectedAlbum.id,
+        type: file.type,
+        url: file.url,
+        description: commonDescription || file.name // Use common description or filename
+    }));
 
     const { data, error } = await supabase
         .from('media_items')
-        .insert([{
-            album_id: selectedAlbum.id,
-            type: mediaForm.type,
-            url: mediaForm.url,
-            description: mediaForm.description
-        }])
-        .select()
-        .single();
+        .insert(payloads)
+        .select();
 
     if (data) {
+        const updatedItems = [...selectedAlbum.items, ...data];
         const updatedAlbum = {
             ...selectedAlbum,
-            items: [...selectedAlbum.items, data]
+            items: updatedItems
         };
         setSelectedAlbum(updatedAlbum);
         // Also update the main list in background
         setAlbums(albums.map(a => a.id === selectedAlbum.id ? updatedAlbum : a));
         
         setIsMediaModalOpen(false);
-        setMediaForm({ type: 'photo', url: '', description: '' });
+        setNewMediaFiles([]);
+        setCommonDescription('');
+    } else if (error) {
+        alert('حدث خطأ أثناء حفظ الملفات. قد يكون حجم الملفات كبيراً جداً.');
+        console.error(error);
     }
     setIsSaving(false);
   };
@@ -225,6 +236,12 @@ const GalleryManager: React.FC = () => {
                 </div>
                 </div>
             ))}
+            {albums.length === 0 && (
+                <div className="col-span-full py-12 text-center text-gray-400">
+                    <FolderOpen size={48} className="mx-auto mb-3 opacity-50" />
+                    <p>لا توجد ألبومات. ابدأ بإنشاء ألبوم جديد.</p>
+                </div>
+            )}
             </div>
         )}
 
@@ -241,9 +258,11 @@ const GalleryManager: React.FC = () => {
                 <div key={item.id} className="relative group rounded-lg overflow-hidden h-48 bg-gray-100">
                 {item.type === 'video' ? (
                     <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white relative">
-                    <div className="absolute inset-0 bg-cover bg-center opacity-50" style={{ backgroundImage: `url(${item.url})` }}></div>
-                    <Play size={32} className="relative z-10" />
-                    <span className="absolute bottom-2 right-2 text-xs bg-black bg-opacity-70 px-2 py-1 rounded">فيديو</span>
+                        <video src={item.url} className="w-full h-full object-cover opacity-60"></video>
+                        <Play size={32} className="relative z-10" />
+                        <span className="absolute bottom-2 right-2 text-xs bg-black bg-opacity-70 px-2 py-1 rounded flex items-center gap-1">
+                            <Video size={10} /> فيديو
+                        </span>
                     </div>
                 ) : (
                     <img src={item.url} alt={item.description} className="w-full h-full object-cover" />
@@ -257,9 +276,11 @@ const GalleryManager: React.FC = () => {
                     <Trash2 size={20} />
                     </button>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                    {item.description || "بدون وصف"}
-                </div>
+                {item.description && (
+                     <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity truncate">
+                        {item.description}
+                    </div>
+                )}
                 </div>
             ))}
             </div>
@@ -270,7 +291,7 @@ const GalleryManager: React.FC = () => {
       {/* Create Album Modal */}
       {isAlbumModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">ألبوم جديد</h2>
               <button onClick={() => setIsAlbumModalOpen(false)}><X className="text-gray-400 hover:text-gray-600" /></button>
@@ -304,67 +325,35 @@ const GalleryManager: React.FC = () => {
       {/* Add Media Modal */}
       {isMediaModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">إضافة وسائط</h2>
+              <h2 className="text-xl font-bold text-gray-800">إضافة وسائط (صور وفيديو)</h2>
               <button onClick={() => setIsMediaModalOpen(false)}><X className="text-gray-400 hover:text-gray-600" /></button>
             </div>
             <form onSubmit={handleAddMedia} className="space-y-4">
-              <div className="flex gap-4 mb-4">
-                 <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="type" 
-                      checked={mediaForm.type === 'photo'}
-                      onChange={() => setMediaForm({...mediaForm, type: 'photo'})}
-                      className="text-primary-600 focus:ring-primary-500 bg-white"
-                    />
-                    <span className="text-sm font-medium">صورة</span>
-                 </label>
-                 <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="type" 
-                      checked={mediaForm.type === 'video'}
-                      onChange={() => setMediaForm({...mediaForm, type: 'video'})}
-                      className="text-primary-600 focus:ring-primary-500 bg-white"
-                    />
-                    <span className="text-sm font-medium">فيديو</span>
-                 </label>
-              </div>
-
-              {mediaForm.type === 'photo' ? (
-                <ImageUploader 
-                  label="اختر الصورة"
-                  currentImage={mediaForm.url}
-                  onImageSelect={(url) => setMediaForm({...mediaForm, url})}
-                />
-              ) : (
-                <div>
-                   <label className="block text-sm font-medium text-gray-700 mb-1">رابط الفيديو (YouTube/MP4)</label>
-                   <input 
-                    type="text" 
-                    placeholder="https://..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                    value={mediaForm.url}
-                    onChange={e => setMediaForm({...mediaForm, url: e.target.value})}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">في هذا الإصدار التجريبي، يرجى استخدام رابط صورة كصورة مصغرة للفيديو.</p>
-                </div>
-              )}
+              
+              <MultiMediaUploader 
+                onFilesChange={(files) => setNewMediaFiles(files)}
+              />
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">وصف (اختياري)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">وصف مشترك (اختياري)</label>
                 <input 
                   type="text" 
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white"
-                  value={mediaForm.description}
-                  onChange={e => setMediaForm({...mediaForm, description: e.target.value})}
+                  value={commonDescription}
+                  onChange={e => setCommonDescription(e.target.value)}
+                  placeholder="سيتم تطبيق هذا الوصف على جميع الملفات المختارة"
                 />
               </div>
 
-              <button disabled={isSaving} type="submit" className="w-full py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 mt-2">
-                {isSaving ? 'جاري الإضافة...' : 'إضافة'}
+              <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-700">
+                <p>ملاحظة: يمكنك رفع ملفات JPG, PNG, WEBP, MP4.</p>
+                <p>عدد الملفات المختارة: <strong>{newMediaFiles.length}</strong></p>
+              </div>
+
+              <button disabled={isSaving || newMediaFiles.length === 0} type="submit" className="w-full py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                {isSaving ? 'جاري الرفع والحفظ...' : 'إضافة الملفات'}
               </button>
             </form>
           </div>
