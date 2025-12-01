@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             const card = document.createElement('div');
             card.className = 'card';
             
-            // Description removed from card view as requested
+            // NOTE: Description is removed from here as per requirements.
+            // It will only be shown in the modal.
             card.innerHTML = `
                 <img src="${image}" alt="${title}">
                 <div class="card-content">
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 </div>
             `;
             
-            // Add Click Event to open Modal
+            // Add Click Event to open Modal with full details
             const btn = card.querySelector('.card-button');
             btn.addEventListener('click', (e) => {
                 e.preventDefault();

@@ -279,6 +279,7 @@ main {
     font-family: inherit;
     font-size: 16px;
     margin-top: auto; /* Pushes button to bottom */
+    text-align: center;
 }
 
 .card-button:hover {
@@ -434,6 +435,8 @@ footer {
     object-fit: cover;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+    display: block;
+    background-color: #eee;
 }
 
 .modal-body {
@@ -451,6 +454,7 @@ footer {
     color: #555;
     line-height: 1.8;
     white-space: pre-wrap;
+    font-size: 16px;
 }
 
 @media (max-width: 768px) {
@@ -462,6 +466,6 @@ footer {
         text-align: center;
     }
     .modal-header-image {
-        height: 250px;
+        height: 200px;
     }
 }
