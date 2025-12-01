@@ -52,3 +52,9 @@ export interface Album {
   items: MediaItem[];
   date: string;
 }
+
+export interface ServiceItem {
+  id: number;
+  title: string;
+  fileUrl: string;
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الخدمات الإدارية - بلدية زان</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <span>اتصل بنا: 96136710777+</span>
+            <span>|</span>
+            <span>البريد الإلكتروني: zenmunicipality@gmail.com</span>
+        </div>
+    </div>
+     <header>
+        <div class="container">
+            <a href="index.html" class="logo-container">
+                <img src="https://picsum.photos/60/60" alt="شعار بلدية زان" id="logo" style="border-radius:50%">
+                <h1>بلدية زان</h1>
+            </a>
+            <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="#">عن البلدية</a></li>
+                    <li><a href="services.html">الخدمات الإدارية</a></li>
+                    <li><a href="#">الاعلانات</a></li>
+                    <li><a href="#">الأخبار والنشاطات</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <section class="page-header">
+                <h1>الخدمات الإدارية</h1>
+            </section>
+
+            <section class="service-section">
+                <h2 class="section-title">دوام العمل</h2>
+                <div class="working-hours">
+                    <p><strong>أيام الدوام:</strong> الإثنين - الجمعة</p>
+                    <p><strong>التوقيت:</strong> من الساعة 8:00 صباحاً حتى 4:00 مساءً</p>
+                    <p><strong>ملاحظة:</strong> البلدية مقفلة في الأعياد والعطلات الرسمية.</p>
+                </div>
+            </section>
+
+            <section class="service-section">
+                <h2 class="section-title">نماذج عن طلبات معاملات المواطنين</h2>
+                <div class="forms-container">
+                    <input type="text" id="form-search" placeholder="ابحث عن نموذج..." style="width: 100%; padding: 15px; font-size: 16px; border-radius: 5px; border: 1px solid #ddd; margin-bottom: 20px; box-sizing: border-box; font-family: 'Cairo', sans-serif;">
+                    <ul id="forms-list" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="text-align: center; padding: 20px; color: #666;">جاري تحميل النماذج...</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>عن بلدية زان</h4>
+                    <p>نسعى لتكون بلدية زان نموذجًا في التطور والخدمة المجتمعية.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>روابط مهمة</h4>
+                    <ul>
+                        <li><a href="#" target="_blank">الصليب الاحمر اللبناني</a></li>
+                        <li><a href="#" target="_blank">أوجيرو</a></li>
+                        <li><a href="#" target="_blank">وزارة الداخلية والبلديات</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تابعونا</h4>
+                    <div class="social-media">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة &copy; 2025 بلدية زان.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

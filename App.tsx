@@ -10,7 +10,8 @@ import {
   Menu, 
   X,
   Image as ImageIcon,
-  ExternalLink
+  ExternalLink,
+  FileText
 } from 'lucide-react';
 
 // Import Pages
@@ -19,6 +20,7 @@ import NewsManager from './pages/NewsManager';
 import AnnouncementsManager from './pages/AnnouncementsManager';
 import Messagesbox from './pages/Messagesbox';
 import GalleryManager from './pages/GalleryManager';
+import ServicesManager from './pages/ServicesManager';
 import SettingsPage from './pages/Settings';
 
 // --- Layout Components ---
@@ -98,6 +100,12 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
               icon={<Megaphone size={20} />} 
               label="الاعلانات" 
               active={location.pathname === '/announcements'} 
+            />
+            <SidebarItem 
+              to="/services" 
+              icon={<FileText size={20} />} 
+              label="الخدمات والنماذج" 
+              active={location.pathname === '/services'} 
             />
              <SidebarItem 
               to="/gallery" 
@@ -187,6 +195,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/news" element={<NewsManager />} />
           <Route path="/announcements" element={<AnnouncementsManager />} />
+          <Route path="/services" element={<ServicesManager />} />
           <Route path="/messages" element={<Messagesbox />} />
           <Route path="/gallery" element={<GalleryManager />} />
           <Route path="/settings" element={<SettingsPage />} />

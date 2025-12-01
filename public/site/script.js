@@ -3,7 +3,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', async function () {
-    // --- Render Logic ---
+    // --- Render Logic for Cards ---
     function renderCards(container, data, type) {
         if (!container) return;
         container.innerHTML = '';
@@ -33,8 +33,59 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+    // --- Services List Logic ---
+    async function initServices() {
+        const formsList = document.getElementById('forms-list');
+        const formSearchInput = document.getElementById('form-search');
+        
+        if (!formsList) return;
+
+        try {
+            const { data: services } = await supabase.from('services').select('*').order('id', { ascending: false });
+            
+            if (!services || services.length === 0) {
+                formsList.innerHTML = '<li style="text-align: center; padding: 20px; color: #666;">لا توجد نماذج متاحة حالياً.</li>';
+                return;
+            }
+
+            // Function to render list
+            function renderServices(items) {
+                formsList.innerHTML = '';
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'form-item';
+                    li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;';
+                    li.innerHTML = `
+                        <span class="form-name" style="font-size: 18px;">${item.title}</span>
+                        <a href="${item.file_url}" class="download-button" target="_blank" download style="background: #009688; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; transition: background 0.3s;">تحميل</a>
+                    `;
+                    formsList.appendChild(li);
+                });
+            }
+
+            // Initial Render
+            renderServices(services);
+
+            // Search Logic
+            if (formSearchInput) {
+                formSearchInput.addEventListener('input', function() {
+                    const searchTerm = formSearchInput.value.toLowerCase();
+                    const filtered = services.filter(s => s.title.toLowerCase().includes(searchTerm));
+                    renderServices(filtered);
+                });
+            }
+
+        } catch (e) {
+            console.error(e);
+            formsList.innerHTML = '<li style="color:red; text-align:center;">خطأ في تحميل البيانات</li>';
+        }
+    }
+
     // --- Fetch Data ---
     try {
+        // Init Services Page
+        initServices();
+
         // Get News
         const { data: newsData } = await supabase.from('news')
             .select('*')
