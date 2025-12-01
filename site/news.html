@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأخبار والنشاطات - بلدية زان</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <span>اتصل بنا: 9616710777+</span>
+        </div>
+    </div>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo-container">
+                <img src="https://picsum.photos/60/60" alt="logo" id="logo" style="border-radius:50%">
+                <h1>بلدية زان</h1>
+            </a>
+            <button class="menu-toggle">&#9776;</button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="about.html">عن البلدية</a></li>
+                    <li><a href="services.html">الخدمات الإدارية</a></li>
+                    <li><a href="announcements.html">الاعلانات</a></li>
+                    <li><a href="news.html">الأخبار والنشاطات</a></li>
+                     <li><a href="projects.html">المشاريع</a></li>
+                    <li><a href="gallery.html">معرض الصور</a></li>
+                    <li><a href="contact.html">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <section class="page-header">
+                <h1>الأخبار والنشاطات</h1>
+            </section>
+            
+            <div class="search-bar-container" style="margin-bottom: 30px;">
+                <input type="text" id="news-search-input" placeholder="ابحث في الأخبار..." style="padding: 10px; width: 100%; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+
+            <div id="news-container" class="cards-container">
+                <p style="text-align:center">جاري تحميل الأخبار...</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-bottom"><p>&copy; 2025 بلدية زان.</p></div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
