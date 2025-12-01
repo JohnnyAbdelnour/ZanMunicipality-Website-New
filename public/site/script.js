@@ -5,6 +5,38 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', async function () {
     
+    // --- 1. Inject Modal HTML into the Body ---
+    const modalHTML = `
+        <div id="details-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <img id="modal-img" class="modal-header-image" src="" alt="">
+                <div class="modal-body">
+                    <p id="modal-date" style="color:#00796B; margin-bottom:10px; font-size:0.9rem; font-weight:bold;"></p>
+                    <h2 id="modal-title"></h2>
+                    <p id="modal-text"></p>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // --- 2. Modal Logic ---
+    const modal = document.getElementById('details-modal');
+    const closeBtn = modal.querySelector('.close-button');
+    const modalImg = document.getElementById('modal-img');
+    const modalDate = document.getElementById('modal-date');
+    const modalTitle = document.getElementById('modal-title');
+    const modalText = document.getElementById('modal-text');
+
+    // Close on X click
+    closeBtn.onclick = () => modal.style.display = "none";
+    
+    // Close on outside click
+    window.onclick = (e) => {
+        if (e.target == modal) modal.style.display = "none";
+    }
+
     // --- Helper: Render Cards ---
     function renderCards(container, data, type) {
         if (!container) return;
@@ -20,25 +52,31 @@ document.addEventListener('DOMContentLoaded', async function () {
             const title = item.title;
             const date = item.date;
             const desc = item.description || '';
-            // Basic truncate for description
-            const shortDesc = desc.length > 100 ? desc.substring(0, 100) + '...' : desc;
             
             const card = document.createElement('div');
             card.className = 'card';
             
-            // Create a simple modal trigger or link for "Read More"
-            // For simplicity in this static version, we just alert or show full text in a simple way
-            // In a full app, this would go to a details page (e.g., news-details.html?id=...)
-            
+            // Description removed from card view as requested
             card.innerHTML = `
                 <img src="${image}" alt="${title}">
                 <div class="card-content">
                     <h3>${title}</h3>
                     <p class="card-date">${date}</p>
-                    <p style="font-size:14px; color:#555; margin-bottom:15px;">${shortDesc}</p>
-                    <button class="card-button" onclick="alert('${title}\\n\\n${desc}')">إقرأ المزيد</button>
+                    <button class="card-button">إقرأ المزيد</button>
                 </div>
             `;
+            
+            // Add Click Event to open Modal
+            const btn = card.querySelector('.card-button');
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modalImg.src = image;
+                modalTitle.textContent = title;
+                modalDate.textContent = date;
+                modalText.textContent = desc;
+                modal.style.display = "block";
+            });
+
             container.appendChild(card);
         });
     }

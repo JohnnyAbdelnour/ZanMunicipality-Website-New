@@ -226,6 +226,8 @@ main {
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
@@ -241,6 +243,9 @@ main {
 
 .card-content {
     padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-content h3 {
@@ -255,6 +260,12 @@ main {
     line-height: 1.6;
 }
 
+.card-date {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
 .card-button {
     display: inline-block;
     background: #009688; /* Lighter Green */
@@ -263,6 +274,11 @@ main {
     border-radius: 5px;
     text-decoration: none;
     transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    margin-top: auto; /* Pushes button to bottom */
 }
 
 .card-button:hover {
@@ -358,6 +374,85 @@ footer {
     font-size: 14px;
 }
 
+/* Modal Popup Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    position: relative;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { top: -50px; opacity: 0; }
+    to { top: 0; opacity: 1; }
+}
+
+.close-button {
+    color: #555;
+    background: #fff;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 32px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.close-button:hover {
+    background: #f0f0f0;
+    color: #000;
+}
+
+.modal-header-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-body h2 {
+    font-size: 28px;
+    color: #00796B;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.modal-body p {
+    color: #555;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
 @media (max-width: 768px) {
     .links-container {
         flex-direction: column;
@@ -365,5 +460,8 @@ footer {
     .footer-content {
         flex-direction: column;
         text-align: center;
+    }
+    .modal-header-image {
+        height: 250px;
     }
 }
