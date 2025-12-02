@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <div class="card-content">
                     <h3>${title}</h3>
                     <p class="card-date">${date}</p>
-                    <p style="font-size:14px; color:#555; margin-bottom:15px; display:none;">${shortDesc}</p>
+                    <p style="display:none;">${shortDesc}</p>
                     <button class="card-button">إقرأ المزيد</button>
                 </div>
             `;
@@ -239,7 +239,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const latestNewsContainer = document.getElementById('latest-news-container');
         if (latestNewsContainer && allNews) {
-            const news = allNews.filter(n => n.category === 'news');
+            // Include News AND Events (Activities) for the "Latest News" section
+            const news = allNews.filter(n => n.category !== 'projects');
             renderCards(latestNewsContainer, news.slice(0, 3), 'news');
         }
 
