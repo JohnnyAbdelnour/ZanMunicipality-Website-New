@@ -56,11 +56,8 @@ header .container {
 }
 
 #logo {
-    height: 80px;
-    width: 80px;
-    object-fit: contain;
+    height: 60px;
     margin-left: 15px;
-    border-radius: 0;
 }
 
 header h1 {
@@ -285,7 +282,7 @@ main {
     text-decoration: none;
     transition: background-color 0.3s;
     cursor: pointer;
-    align-self: flex-end; /* Aligns button to the left in RTL */
+    align-self: flex-start; /* Aligns button to the right in RTL */
     margin-top: auto;
     border: none;
     font-family: 'Cairo', sans-serif;
