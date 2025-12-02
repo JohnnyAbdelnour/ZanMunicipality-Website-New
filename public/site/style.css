@@ -39,7 +39,7 @@ body {
 header {
     background: #ffffff;
     color: #333;
-    padding: 10px 0;
+    padding: 20px 0;
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -267,6 +267,7 @@ main {
     border-radius: 5px;
     text-decoration: none;
     transition: background 0.3s;
+    cursor: pointer;
 }
 
 .card-button:hover {
@@ -428,12 +429,13 @@ footer {
 
 .modal-header-image {
     width: 100%;
-    height: 350px;
-    object-fit: cover;
+    height: auto;
+    max-height: 60vh;
+    object-fit: contain;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     display: block;
-    background-color: #eee;
+    background-color: #f9f9f9;
 }
 
 .modal-body {
@@ -461,7 +463,7 @@ footer {
     }
     
     .modal-header-image {
-        height: 200px;
+        max-height: 40vh;
     }
     
     .modal-body {
