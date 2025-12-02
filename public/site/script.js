@@ -153,9 +153,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 items.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'form-item';
+                    li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;';
                     li.innerHTML = `
-                        <span class="form-name">${item.title}</span>
-                        <a href="${item.file_url}" class="download-button" target="_blank" download>تحميل</a>
+                        <span class="form-name" style="font-size: 18px;">${item.title}</span>
+                        <a href="${item.file_url}" class="download-button" target="_blank" download style="background: #009688; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; transition: background 0.3s;">تحميل</a>
                     `;
                     formsList.appendChild(li);
                 });
@@ -286,19 +287,23 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 const albumContainer = document.createElement('div');
                 albumContainer.className = 'album-container';
+                albumContainer.style.marginBottom = '50px';
 
                 const albumTitle = document.createElement('h2');
                 albumTitle.className = 'album-title';
+                albumTitle.style.cssText = 'font-size: 28px; color: #00796B; border-bottom: 2px solid #009688; padding-bottom: 10px; margin-bottom: 30px;';
                 albumTitle.textContent = album.title;
                 albumContainer.appendChild(albumTitle);
 
                 const itemsContainer = document.createElement('div');
                 itemsContainer.className = 'gallery-items-container';
+                itemsContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;';
 
                 album.items.forEach(item => {
                     const galleryItem = document.createElement('a');
                     galleryItem.href = item.url;
                     galleryItem.className = 'gallery-item';
+                    galleryItem.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; height: 220px;';
                     
                     // Lightbox attributes
                     galleryItem.setAttribute('data-lightbox', `album-${album.id}`);

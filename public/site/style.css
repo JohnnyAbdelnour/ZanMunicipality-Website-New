@@ -242,6 +242,8 @@ main {
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
@@ -257,6 +259,9 @@ main {
 
 .card-content {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .card-content h3 {
@@ -280,6 +285,11 @@ main {
     text-decoration: none;
     transition: background 0.3s;
     cursor: pointer;
+    align-self: flex-end; /* Aligns button to the left in RTL */
+    margin-top: auto;
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
 }
 
 .card-button:hover {
@@ -442,7 +452,7 @@ footer {
 .modal-header-image {
     width: 100%;
     height: auto;
-    max-height: 60vh;
+    max-height: 70vh;
     object-fit: contain;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
