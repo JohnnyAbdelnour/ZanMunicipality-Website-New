@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const card = document.createElement('div');
             card.className = 'card';
             
+            // Description is hidden on card, shown in modal
             card.innerHTML = `
                 <img src="${image}" alt="${title}">
                 <div class="card-content">
