@@ -278,22 +278,23 @@ main {
 
 .card-button {
     display: inline-block;
-    background: #009688; /* Lighter Green */
+    background-color: #009688; /* Lighter Green */
     color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 8px 24px;
+    border-radius: 4px;
     text-decoration: none;
-    transition: background 0.3s;
+    transition: background-color 0.3s;
     cursor: pointer;
     align-self: flex-end; /* Aligns button to the left in RTL */
     margin-top: auto;
     border: none;
     font-family: 'Cairo', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .card-button:hover {
-    background: #00796B; /* Dark Green */
+    background-color: #00796B; /* Dark Green */
 }
 
 .quick-links {
