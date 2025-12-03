@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { 
   Save, 
@@ -71,19 +73,21 @@ const Settings: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">إعدادات النظام</h1>
-          <p className="text-gray-500">تكوين معلومات الموقع وبيانات الاتصال</p>
+      {/* Green Banner */}
+      <div className="bg-primary-700 -mx-6 -mt-6 mb-8 p-8 text-center relative shadow-md">
+        <h1 className="text-3xl font-bold text-white mb-2">إعدادات النظام</h1>
+        <p className="text-primary-100 text-lg">تكوين معلومات الموقع وبيانات الاتصال</p>
+        
+        <div className="mt-4 md:mt-0 md:absolute md:top-1/2 md:left-8 md:transform md:-translate-y-1/2">
+            <button 
+                onClick={handleSave}
+                disabled={isLoading}
+                className="flex items-center gap-2 bg-white text-primary-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors font-bold shadow-sm disabled:opacity-50"
+            >
+                <Save size={20} />
+                <span>{isLoading ? 'جاري الحفظ...' : 'حفظ التغييرات'}</span>
+            </button>
         </div>
-        <button 
-          onClick={handleSave}
-          disabled={isLoading}
-          className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
-        >
-          <Save size={20} />
-          <span>{isLoading ? 'جاري الحفظ...' : 'حفظ التغييرات'}</span>
-        </button>
       </div>
 
       {message && (

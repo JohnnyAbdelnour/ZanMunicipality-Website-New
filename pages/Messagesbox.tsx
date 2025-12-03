@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { 
   Search, 
@@ -60,11 +62,10 @@ const Messagesbox: React.FC = () => {
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-         <div>
-            <h1 className="text-2xl font-bold text-gray-800">صندوق الوارد</h1>
-            <p className="text-gray-500">رسائل المواطنين والشكاوى</p>
-        </div>
+       {/* Green Banner */}
+      <div className="bg-primary-700 -mx-6 -mt-6 mb-4 p-8 text-center relative shadow-md">
+        <h1 className="text-3xl font-bold text-white mb-2">صندوق الوارد</h1>
+        <p className="text-primary-100 text-lg">رسائل المواطنين والشكاوى</p>
       </div>
 
       <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex">

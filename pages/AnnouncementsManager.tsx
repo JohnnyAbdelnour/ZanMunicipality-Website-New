@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
@@ -97,15 +99,20 @@ const AnnouncementsManager: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-            <h1 className="text-2xl font-bold text-gray-800">إدارة الإعلانات</h1>
-            <p className="text-gray-500">نشر تنبيهات وإعلانات للمواطنين</p>
+      {/* Green Banner */}
+      <div className="bg-primary-700 -mx-6 -mt-6 mb-8 p-8 text-center relative shadow-md">
+        <h1 className="text-3xl font-bold text-white mb-2">إدارة الإعلانات</h1>
+        <p className="text-primary-100 text-lg">نشر تنبيهات وإعلانات للمواطنين</p>
+        
+        <div className="mt-4 md:mt-0 md:absolute md:top-1/2 md:left-8 md:transform md:-translate-y-1/2">
+            <button 
+                onClick={handleAddNew}
+                className="flex items-center gap-2 bg-white text-primary-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors font-bold shadow-sm"
+            >
+                <Plus size={20} />
+                <span>إضافة إعلان</span>
+            </button>
         </div>
-        <button onClick={handleAddNew} className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
-          <Plus size={20} />
-          <span>إضافة إعلان</span>
-        </button>
       </div>
 
       {isLoading ? (

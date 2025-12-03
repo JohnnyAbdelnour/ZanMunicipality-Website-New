@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import { 
   Users, 
@@ -47,14 +49,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div>
-            <h1 className="text-2xl font-bold text-gray-800">لوحة القيادة</h1>
-            <p className="text-gray-500">نظرة عامة على نشاط الموقع</p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500 bg-white px-3 py-1 rounded-md border border-gray-200">
-            <Calendar size={16} />
-            <span>{new Date().toLocaleDateString('ar-LB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+      {/* Green Banner */}
+      <div className="bg-primary-700 -mx-6 -mt-6 mb-8 p-8 text-center relative shadow-md">
+        <h1 className="text-3xl font-bold text-white mb-2">لوحة القيادة</h1>
+        <p className="text-primary-100 text-lg">نظرة عامة على نشاط الموقع</p>
+        
+        <div className="mt-4 md:mt-0 md:absolute md:top-1/2 md:left-8 md:transform md:-translate-y-1/2">
+            <div className="flex items-center gap-2 text-sm text-primary-700 bg-white px-3 py-1.5 rounded-lg border border-transparent shadow-sm font-semibold">
+                <Calendar size={16} />
+                <span>{new Date().toLocaleDateString('ar-LB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
         </div>
       </div>
 
