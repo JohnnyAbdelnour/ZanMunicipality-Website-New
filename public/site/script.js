@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 
                 // Update Top Bar
                 const topPhone = document.getElementById('top-phone');
-                if (topPhone && s.phone) topPhone.innerText = `اتصل بنا: ${s.phone}`;
+                if (topPhone && s.phone) topPhone.innerHTML = `اتصل بنا: <span dir="ltr">${s.phone}</span>`;
                 
                 const topEmail = document.getElementById('top-email');
                 if (topEmail && s.email) topEmail.innerText = `البريد الإلكتروني: ${s.email}`;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 // Update Contact Page Details (if present)
                 const contactPhone = document.getElementById('contact-phone');
-                if (contactPhone && s.phone) contactPhone.innerHTML = `<strong>الهاتف:</strong> ${s.phone}`;
+                if (contactPhone && s.phone) contactPhone.innerHTML = `<strong>الهاتف:</strong> <span dir="ltr">${s.phone}</span>`;
 
                 const contactEmail = document.getElementById('contact-email');
                 if (contactEmail && s.email) contactEmail.innerHTML = `<strong>البريد الإلكتروني:</strong> ${s.email}`;
@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const title = item.title;
             const date = item.date;
             const desc = item.description || '';
+            // Basic truncate for description
             const shortDesc = desc.length > 100 ? desc.substring(0, 100) + '...' : desc;
             
             const card = document.createElement('div');
@@ -266,6 +267,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (projectsContainer && allNews) {
             const projectItems = allNews.filter(n => n.category === 'projects');
             renderCards(projectsContainer, projectItems, 'projects');
+            // Assuming projects might reuse news-search-input or have their own
             const projectSearch = document.getElementById('projects-search-input'); 
             if(projectSearch) setupSearch('projects-search-input', projectItems, projectsContainer, 'projects');
         }
@@ -313,14 +315,18 @@ document.addEventListener('DOMContentLoaded', async function () {
                     galleryItem.setAttribute('data-title', item.description || album.title);
 
                     if (item.type === 'video') {
+                        // For video, usually lightbox libraries need specific handling or just link to file
+                        // Simple fallback: render a video tag or a placeholder image with play icon
                          galleryItem.innerHTML = `
                             <video src="${item.url}" style="width:100%; height:100%; object-fit:cover;"></video>
                             <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 5px black;">
                                 <i class="fas fa-play-circle"></i>
                             </div>
                         `;
+                        // Remove lightbox attr for video if library doesn't support it easily, 
+                        // or let it open raw. Here we keep it simple.
                         galleryItem.removeAttribute('data-lightbox');
-                        galleryItem.target = "_blank"; 
+                        galleryItem.target = "_blank"; // Open videos in new tab
                     } else {
                         galleryItem.innerHTML = `
                             <img src="${item.url}" alt="${item.description || ''}" style="width:100%; height:100%; object-fit:cover;">

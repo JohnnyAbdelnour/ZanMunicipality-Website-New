@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -15,7 +16,7 @@
 <body>
     <div class="top-bar">
         <div class="container">
-            <span id="top-phone">اتصل بنا: 9616710777+</span>
+            <span id="top-phone">اتصل بنا: <span dir="ltr">+961 6 710 777</span></span>
             <span>|</span>
             <span id="top-email">البريد الإلكتروني: zenmunicipality@gmail.com</span>
         </div>
@@ -23,7 +24,7 @@
     <header>
         <div class="container">
             <a href="index.html" class="logo-container">
-                <img src="https://picsum.photos/60/60" alt="شعار بلدية زان" id="logo">
+                <img src="https://picsum.photos/60/60" alt="شعار بلدية زان" id="logo" style="border-radius:50%">
                 <h1>بلدية زان</h1>
             </a>
             <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -42,12 +43,29 @@
         </div>
     </header>
 
-    <section class="slider-container" id="main-slider">
-        <!-- Slider content will be loaded dynamically from Supabase -->
-        <div class="slides"></div>
+    <section class="slider-container">
+        <div class="slides">
+            <div class="slide active">
+                <img src="https://picsum.photos/id/1018/1200/600" alt="Slider Image 1">
+                <div class="slide-caption">
+                    <h2>مرحباً بكم في بلدية زان</h2>
+                    <p>نعمل من أجل مستقبل أفضل لبلدتنا.</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://picsum.photos/id/1015/1200/600" alt="Slider Image 2">
+                <div class="slide-caption">
+                    <h2>مشاريعنا الحالية</h2>
+                    <p>اكتشفوا أحدث المشاريع التي نعمل عليها.</p>
+                </div>
+            </div>
+        </div>
         <button class="prev-slide">&#10094;</button>
         <button class="next-slide">&#10095;</button>
-        <div class="slider-dots"></div>
+        <div class="slider-dots">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+        </div>
     </section>
 
     <main>
@@ -107,8 +125,8 @@
                 <div class="footer-section">
                     <h4>تابعونا</h4>
                     <div class="social-media">
-                        <a href="#" id="footer-fb" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" id="footer-insta" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
