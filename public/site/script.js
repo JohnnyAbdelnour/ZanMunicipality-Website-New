@@ -1,4 +1,5 @@
 
+
 const supabaseUrl = 'https://efhjbxtivxzunhpjwidh.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGpieHRpdnh6dW5ocGp3aWRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzgzNjQsImV4cCI6MjA4MDExNDM2NH0.KFP5GweIn--86EfFsTnd7gQ1eM_Ddpikr5V7xZRNwdU';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -352,8 +353,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // --- Slider Logic (Home Page) ---
-    // Moved inside loadSlider logic below
-    
     async function loadAndInitSlider() {
         const sliderContainer = document.querySelector('.slider-container');
         if (!sliderContainer) return;
@@ -393,13 +392,22 @@ document.addEventListener('DOMContentLoaded', async function () {
                 // Create Slide
                 const slideDiv = document.createElement('div');
                 slideDiv.className = `slide ${isActive}`;
-                slideDiv.innerHTML = `
+                
+                const slideContent = `
                     <img src="${slide.image_url}" alt="${slide.title}">
                     <div class="slide-caption">
                         <h2>${slide.title}</h2>
                         <p>${slide.subtitle}</p>
                     </div>
                 `;
+
+                if (slide.link && slide.link.trim() !== '') {
+                    // Wrap in anchor tag if link exists
+                    slideDiv.innerHTML = `<a href="${slide.link}" style="display:block; width:100%; height:100%; text-decoration:none; color:inherit;">${slideContent}</a>`;
+                } else {
+                    slideDiv.innerHTML = slideContent;
+                }
+                
                 slidesContainer.appendChild(slideDiv);
 
                 // Create Dot

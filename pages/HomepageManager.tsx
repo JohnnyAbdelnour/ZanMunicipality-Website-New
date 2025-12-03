@@ -9,7 +9,8 @@ import {
   Eye,
   EyeOff,
   Move,
-  LayoutTemplate
+  LayoutTemplate,
+  Link as LinkIcon
 } from 'lucide-react';
 import { SliderItem } from '../types';
 import ImageUploader from '../components/ImageUploader';
@@ -145,7 +146,12 @@ const HomepageManager: React.FC = () => {
                 </div>
                 <div className="p-5 flex-1 flex flex-col">
                     <h3 className="text-lg font-bold text-gray-800 mb-1">{item.title}</h3>
-                    <p className="text-sm text-gray-600 mb-4 flex-1">{item.subtitle}</p>
+                    <p className="text-sm text-gray-600 mb-2 flex-1">{item.subtitle}</p>
+                    {item.link && (
+                        <p className="text-xs text-blue-600 flex items-center gap-1 mb-4 truncate">
+                            <LinkIcon size={12} /> {item.link}
+                        </p>
+                    )}
                     
                     <div className="flex gap-2 pt-4 border-t border-gray-100">
                         <button 
@@ -204,6 +210,17 @@ const HomepageManager: React.FC = () => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white"
                             value={formData.subtitle}
                             onChange={e => setFormData({...formData, subtitle: e.target.value})}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">الرابط (اختياري)</label>
+                        <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white"
+                            value={formData.link}
+                            onChange={e => setFormData({...formData, link: e.target.value})}
+                            placeholder="https://..."
+                            dir="ltr"
                         />
                     </div>
                     
