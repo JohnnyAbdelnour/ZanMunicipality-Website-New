@@ -1,5 +1,4 @@
 
-
 /* General Body Styles */
 body {
     font-family: 'Cairo', sans-serif;
@@ -196,7 +195,7 @@ nav a:hover {
 .page-header {
     background: #00796B; /* Dark Green */
     color: #fff;
-    padding: 60px 0;
+    padding: 30px 0; /* Reduced from 60px */
     text-align: center;
     width: 100%;
     margin-bottom: 40px;
@@ -590,7 +589,7 @@ footer {
 /* Page Headers Responsive */
 @media (max-width: 768px) {
     .page-header {
-        padding: 40px 0;
+        padding: 20px 0; /* Reduced from 40px */
     }
     .page-header h1 {
         font-size: 24px;
