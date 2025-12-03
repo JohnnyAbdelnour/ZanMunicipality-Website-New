@@ -192,9 +192,25 @@ nav a:hover {
     background-color: #00796B; /* Dark Green */
 }
 
+/* Page Header Styles */
+.page-header {
+    background: #00796B; /* Dark Green */
+    color: #fff;
+    padding: 50px 0;
+    text-align: right;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+}
+
 /* Main Content */
 main {
-    padding: 40px 0;
+    padding-bottom: 40px;
 }
 
 .welcome-section {
@@ -572,6 +588,9 @@ footer {
 
 /* Page Headers Responsive */
 @media (max-width: 768px) {
+    .page-header {
+        padding: 30px 0;
+    }
     .page-header h1 {
         font-size: 24px;
     }
