@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export interface NewsItem {
@@ -51,10 +52,21 @@ export interface Album {
   coverUrl: string;
   items: MediaItem[];
   date: string;
+  items_count?: number; // Helper for display
 }
 
 export interface ServiceItem {
   id: number;
   title: string;
   fileUrl: string;
+}
+
+export interface SliderItem {
+  id: number;
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  link?: string;
+  sortOrder: number;
+  active: boolean;
 }

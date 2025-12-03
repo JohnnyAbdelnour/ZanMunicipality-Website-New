@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MemoryRouter, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { 
@@ -11,7 +12,8 @@ import {
   X,
   Image as ImageIcon,
   ExternalLink,
-  FileText
+  FileText,
+  LayoutTemplate
 } from 'lucide-react';
 
 // Import Pages
@@ -22,6 +24,7 @@ import Messagesbox from './pages/Messagesbox';
 import GalleryManager from './pages/GalleryManager';
 import ServicesManager from './pages/ServicesManager';
 import SettingsPage from './pages/Settings';
+import HomepageManager from './pages/HomepageManager';
 
 // --- Layout Components ---
 
@@ -88,6 +91,12 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
               icon={<LayoutDashboard size={20} />} 
               label="لوحة القيادة" 
               active={location.pathname === '/'} 
+            />
+            <SidebarItem 
+              to="/homepage" 
+              icon={<LayoutTemplate size={20} />} 
+              label="واجهة الموقع" 
+              active={location.pathname === '/homepage'} 
             />
             <SidebarItem 
               to="/news" 
@@ -193,6 +202,7 @@ const App: React.FC = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/homepage" element={<HomepageManager />} />
           <Route path="/news" element={<NewsManager />} />
           <Route path="/announcements" element={<AnnouncementsManager />} />
           <Route path="/services" element={<ServicesManager />} />

@@ -352,28 +352,128 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // --- Slider Logic (Home Page) ---
-    const sliderContainer = document.querySelector('.slider-container');
-    if (sliderContainer) {
+    // Moved inside loadSlider logic below
+    
+    async function loadAndInitSlider() {
+        const sliderContainer = document.querySelector('.slider-container');
+        if (!sliderContainer) return;
+
+        const slidesContainer = sliderContainer.querySelector('.slides');
+        const dotsContainer = sliderContainer.querySelector('.slider-dots');
+
+        try {
+            const { data: slides } = await supabase
+                .from('sliders')
+                .select('*')
+                .eq('active', true)
+                .order('sort_order', { ascending: true });
+
+            if (!slides || slides.length === 0) {
+                // Fallback or empty state
+                slidesContainer.innerHTML = `
+                    <div class="slide active">
+                        <img src="https://picsum.photos/1200/600" alt="Default">
+                        <div class="slide-caption">
+                            <h2>مرحباً بكم</h2>
+                            <p>الموقع الرسمي</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Clear containers
+            slidesContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            // Render Slides
+            slides.forEach((slide, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                
+                // Create Slide
+                const slideDiv = document.createElement('div');
+                slideDiv.className = `slide ${isActive}`;
+                slideDiv.innerHTML = `
+                    <img src="${slide.image_url}" alt="${slide.title}">
+                    <div class="slide-caption">
+                        <h2>${slide.title}</h2>
+                        <p>${slide.subtitle}</p>
+                    </div>
+                `;
+                slidesContainer.appendChild(slideDiv);
+
+                // Create Dot
+                const dot = document.createElement('span');
+                dot.className = `dot ${isActive}`;
+                dot.setAttribute('data-slide', index);
+                dotsContainer.appendChild(dot);
+            });
+
+            // Initialize Slider Interaction
+            initSliderLogic();
+
+        } catch (error) {
+            console.error('Error loading slides', error);
+        }
+    }
+
+    function initSliderLogic() {
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         const nextSlide = document.querySelector('.next-slide');
         const prevSlide = document.querySelector('.prev-slide');
+        
+        if (slides.length === 0) return;
+
         let currentSlide = 0;
+        let slideInterval;
 
         function showSlide(n) {
             slides.forEach(slide => slide.classList.remove('active'));
             dots.forEach(dot => dot.classList.remove('active'));
-            slides[n].classList.add('active');
-            dots[n].classList.add('active');
+            
+            // Handle wrapping
+            if (n >= slides.length) currentSlide = 0;
+            else if (n < 0) currentSlide = slides.length - 1;
+            else currentSlide = n;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
         }
+
         function changeSlide(n) {
-            currentSlide = (n + slides.length) % slides.length;
-            showSlide(currentSlide);
+            showSlide(currentSlide + n);
         }
-        if (nextSlide && prevSlide) {
-            nextSlide.addEventListener('click', () => changeSlide(currentSlide + 1));
-            prevSlide.addEventListener('click', () => changeSlide(currentSlide - 1));
+
+        if (nextSlide) nextSlide.addEventListener('click', () => {
+            changeSlide(1);
+            resetInterval();
+        });
+        
+        if (prevSlide) prevSlide.addEventListener('click', () => {
+            changeSlide(-1);
+            resetInterval();
+        });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                resetInterval();
+            });
+        });
+
+        function startInterval() {
+            slideInterval = setInterval(() => changeSlide(1), 5000);
         }
-        if(slides.length > 0) showSlide(currentSlide);
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            startInterval();
+        }
+
+        // Start auto play
+        startInterval();
     }
+
+    loadAndInitSlider();
 });

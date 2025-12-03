@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -41,29 +42,12 @@
         </div>
     </header>
 
-    <section class="slider-container">
-        <div class="slides">
-            <div class="slide active">
-                <img src="https://picsum.photos/id/1018/1200/600" alt="Slider Image 1">
-                <div class="slide-caption">
-                    <h2>مرحباً بكم في بلدية زان</h2>
-                    <p>نعمل من أجل مستقبل أفضل لبلدتنا.</p>
-                </div>
-            </div>
-            <div class="slide">
-                <img src="https://picsum.photos/id/1015/1200/600" alt="Slider Image 2">
-                <div class="slide-caption">
-                    <h2>مشاريعنا الحالية</h2>
-                    <p>اكتشفوا أحدث المشاريع التي نعمل عليها.</p>
-                </div>
-            </div>
-        </div>
+    <section class="slider-container" id="main-slider">
+        <!-- Slider content will be loaded dynamically from Supabase -->
+        <div class="slides"></div>
         <button class="prev-slide">&#10094;</button>
         <button class="next-slide">&#10095;</button>
-        <div class="slider-dots">
-            <span class="dot active" data-slide="0"></span>
-            <span class="dot" data-slide="1"></span>
-        </div>
+        <div class="slider-dots"></div>
     </section>
 
     <main>
