@@ -1,5 +1,4 @@
 
-
 const supabaseUrl = 'https://efhjbxtivxzunhpjwidh.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGpieHRpdnh6dW5ocGp3aWRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzgzNjQsImV4cCI6MjA4MDExNDM2NH0.KFP5GweIn--86EfFsTnd7gQ1eM_Ddpikr5V7xZRNwdU';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -228,6 +227,11 @@ document.addEventListener('DOMContentLoaded', async function () {
             .select('*')
             .order('date', { ascending: false });
 
+        // Fetch Gallery
+        const { data: galleryAlbums } = await supabase.from('albums')
+            .select('*, items:media_items(*)')
+            .order('date', { ascending: false });
+
 
         // --- Render: Home Page (Latest Items) ---
         const latestAnnouncementsContainer = document.getElementById('latest-announcements-container');
@@ -274,115 +278,88 @@ document.addEventListener('DOMContentLoaded', async function () {
             setupSearch('announcements-search-input', allAnnouncements, announcementsContainer, 'announcements');
         }
 
-        // --- Render: Gallery Page (Refactored for Album View) ---
+        // --- Render: Gallery Page ---
         const gallerySection = document.getElementById('gallery-section');
-        if (gallerySection) {
+        if (gallerySection && galleryAlbums) {
             gallerySection.innerHTML = '';
+            if (galleryAlbums.length === 0) {
+                 gallerySection.innerHTML = '<p style="text-align:center; color:#666;">لا يوجد ألبومات صور حالياً.</p>';
+            }
             
             // Check for ?id= parameter in URL
             const urlParams = new URLSearchParams(window.location.search);
             const albumId = urlParams.get('id');
 
             if (albumId) {
-                // --- Show Specific Album Items ---
-                try {
-                    const { data: album } = await supabase
-                        .from('albums')
-                        .select('*, items:media_items(*)')
-                        .eq('id', albumId)
-                        .single();
+                // Show Single Album
+                const album = galleryAlbums.find(a => a.id == albumId);
+                if (album) {
+                     gallerySection.innerHTML = `
+                        <a href="gallery.html" class="gallery-back-btn">
+                            <i class="fas fa-arrow-right"></i> عودة للألبومات
+                        </a>
+                        <div class="album-header" style="text-align:center; margin-bottom:30px;">
+                            <h2 style="color:#00796B;">${album.title}</h2>
+                            <p style="color:#666;">${album.date}</p>
+                        </div>
+                    `;
+                    const itemsContainer = document.createElement('div');
+                    itemsContainer.className = 'gallery-items-container';
+                    itemsContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;';
 
-                    if (!album) {
-                        gallerySection.innerHTML = '<p style="text-align:center;">الألبوم غير موجود.</p>';
-                    } else {
-                        // Add "Back" button
-                        gallerySection.innerHTML = `
-                            <a href="gallery.html" class="gallery-back-btn">
-                                <i class="fas fa-arrow-right"></i> عودة للألبومات
-                            </a>
-                            <div class="album-header" style="text-align:center; margin-bottom:30px;">
-                                <h2 style="color:#00796B;">${album.title}</h2>
-                                <p style="color:#666;">${album.date}</p>
-                            </div>
-                        `;
-
-                        if (!album.items || album.items.length === 0) {
-                            gallerySection.innerHTML += '<p style="text-align:center; color:#666;">لا يوجد صور في هذا الألبوم.</p>';
-                        } else {
-                            const itemsContainer = document.createElement('div');
-                            itemsContainer.className = 'gallery-items-container';
-                            itemsContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;';
-
-                            album.items.forEach(item => {
-                                const galleryItem = document.createElement('a');
-                                galleryItem.href = item.url;
-                                galleryItem.className = 'gallery-item';
-                                galleryItem.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; height: 220px;';
-                                
-                                // Lightbox attributes
-                                galleryItem.setAttribute('data-lightbox', `album-${album.id}`);
-                                galleryItem.setAttribute('data-title', item.description || album.title);
-
-                                if (item.type === 'video') {
-                                    galleryItem.innerHTML = `
-                                        <video src="${item.url}" style="width:100%; height:100%; object-fit:cover;"></video>
-                                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 5px black;">
-                                            <i class="fas fa-play-circle"></i>
-                                        </div>
-                                    `;
-                                    galleryItem.removeAttribute('data-lightbox');
-                                    galleryItem.target = "_blank"; 
-                                } else {
-                                    galleryItem.innerHTML = `
-                                        <img src="${item.url}" alt="${item.description || ''}" style="width:100%; height:100%; object-fit:cover;">
-                                    `;
-                                }
-                                itemsContainer.appendChild(galleryItem);
-                            });
-                            gallerySection.appendChild(itemsContainer);
-                        }
-                    }
-                } catch (err) {
-                    console.error("Error loading album items", err);
-                    gallerySection.innerHTML = '<p style="text-align:center;">حدث خطأ أثناء تحميل الألبوم.</p>';
-                }
-
-            } else {
-                // --- Show All Albums (Covers) ---
-                try {
-                    // Fetch albums
-                    const { data: galleryAlbums } = await supabase.from('albums')
-                        .select('*, items:media_items(count)') // Get count of items
-                        .order('date', { ascending: false });
-
-                    if (!galleryAlbums || galleryAlbums.length === 0) {
-                        gallerySection.innerHTML = '<p style="text-align:center; color:#666;">لا يوجد ألبومات صور حالياً.</p>';
-                    } else {
-                        const albumsGrid = document.createElement('div');
-                        albumsGrid.className = 'albums-grid';
-                        
-                        galleryAlbums.forEach(album => {
-                            const cover = album.cover_url || 'https://via.placeholder.com/400x300?text=No+Cover';
-                            const count = album.items ? album.items[0]?.count : 0; // Approximate count logic if simple
-                            // Supabase count is a bit tricky in simple select, just showing title/date for now or items length if fetched fully
+                    if (album.items) {
+                        album.items.forEach(item => {
+                            const galleryItem = document.createElement('a');
+                            galleryItem.href = item.url;
+                            galleryItem.className = 'gallery-item';
+                            galleryItem.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; height: 220px;';
                             
-                            const albumCard = document.createElement('a');
-                            albumCard.href = `gallery.html?id=${album.id}`;
-                            albumCard.className = 'album-card';
-                            albumCard.innerHTML = `
-                                <img src="${cover}" alt="${album.title}" class="album-cover">
-                                <div class="album-info">
-                                    <h3>${album.title}</h3>
-                                    <p>${album.date}</p>
-                                </div>
-                            `;
-                            albumsGrid.appendChild(albumCard);
+                            // Lightbox attributes
+                            galleryItem.setAttribute('data-lightbox', `album-${album.id}`);
+                            galleryItem.setAttribute('data-title', item.description || album.title);
+
+                            if (item.type === 'video') {
+                                galleryItem.innerHTML = `
+                                    <video src="${item.url}" style="width:100%; height:100%; object-fit:cover;"></video>
+                                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 5px black;">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                `;
+                                galleryItem.removeAttribute('data-lightbox');
+                                galleryItem.target = "_blank"; 
+                            } else {
+                                galleryItem.innerHTML = `
+                                    <img src="${item.url}" alt="${item.description || ''}" style="width:100%; height:100%; object-fit:cover;">
+                                `;
+                            }
+                            itemsContainer.appendChild(galleryItem);
                         });
-                        gallerySection.appendChild(albumsGrid);
+                        gallerySection.appendChild(itemsContainer);
                     }
-                } catch (err) {
-                    console.error("Error loading albums", err);
+                } else {
+                    gallerySection.innerHTML = '<p style="text-align:center;">الألبوم غير موجود.</p>';
                 }
+            } else {
+                // Show All Albums
+                const albumsGrid = document.createElement('div');
+                albumsGrid.className = 'albums-grid';
+                
+                galleryAlbums.forEach(album => {
+                    const cover = album.cover_url || 'https://via.placeholder.com/400x300?text=No+Cover';
+                    
+                    const albumCard = document.createElement('a');
+                    albumCard.href = `gallery.html?id=${album.id}`;
+                    albumCard.className = 'album-card';
+                    albumCard.innerHTML = `
+                        <img src="${cover}" alt="${album.title}" class="album-cover">
+                        <div class="album-info">
+                            <h3>${album.title}</h3>
+                            <p>${album.date}</p>
+                        </div>
+                    `;
+                    albumsGrid.appendChild(albumCard);
+                });
+                gallerySection.appendChild(albumsGrid);
             }
         }
 
@@ -407,26 +384,89 @@ document.addEventListener('DOMContentLoaded', async function () {
     // --- Slider Logic (Home Page) ---
     const sliderContainer = document.querySelector('.slider-container');
     if (sliderContainer) {
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        const nextSlide = document.querySelector('.next-slide');
-        const prevSlide = document.querySelector('.prev-slide');
-        let currentSlide = 0;
+        // Fetch Slides from DB
+        try {
+            const { data: slidesData } = await supabase
+                .from('sliders')
+                .select('*')
+                .eq('active', true)
+                .order('sort_order', { ascending: true });
 
-        function showSlide(n) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            slides[n].classList.add('active');
-            dots[n].classList.add('active');
+            const slidesWrapper = sliderContainer.querySelector('.slides');
+            const dotsWrapper = sliderContainer.querySelector('.slider-dots');
+            
+            if (slidesData && slidesData.length > 0 && slidesWrapper) {
+                slidesWrapper.innerHTML = '';
+                if(dotsWrapper) dotsWrapper.innerHTML = '';
+
+                slidesData.forEach((slide, index) => {
+                    // Create Slide
+                    const slideDiv = document.createElement('div');
+                    slideDiv.className = `slide ${index === 0 ? 'active' : ''}`;
+                    
+                    let contentHTML = `
+                        <img src="${slide.image_url}" alt="${slide.title}">
+                        <div class="slide-caption">
+                            <h2>${slide.title}</h2>
+                            <p>${slide.subtitle}</p>
+                        </div>
+                    `;
+
+                    // If linked, wrap in anchor
+                    if (slide.link) {
+                        contentHTML = `<a href="${slide.link}" style="display:block; width:100%; height:100%; color:inherit; text-decoration:none;">${contentHTML}</a>`;
+                    }
+                    
+                    slideDiv.innerHTML = contentHTML;
+                    slidesWrapper.appendChild(slideDiv);
+
+                    // Create Dot
+                    if(dotsWrapper) {
+                        const dot = document.createElement('span');
+                        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                        dot.setAttribute('data-slide', index);
+                        dotsWrapper.appendChild(dot);
+                    }
+                });
+
+                // Initialize Animation
+                const slidesEls = document.querySelectorAll('.slide');
+                const dotsEls = document.querySelectorAll('.dot');
+                const nextSlideBtn = document.querySelector('.next-slide');
+                const prevSlideBtn = document.querySelector('.prev-slide');
+                let currentSlide = 0;
+
+                function showSlide(n) {
+                    slidesEls.forEach(slide => slide.classList.remove('active'));
+                    dotsEls.forEach(dot => dot.classList.remove('active'));
+                    
+                    // Wrap around
+                    if (n >= slidesEls.length) currentSlide = 0;
+                    else if (n < 0) currentSlide = slidesEls.length - 1;
+                    else currentSlide = n;
+
+                    slidesEls[currentSlide].classList.add('active');
+                    if(dotsEls[currentSlide]) dotsEls[currentSlide].classList.add('active');
+                }
+
+                if (nextSlideBtn) nextSlideBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+                if (prevSlideBtn) prevSlideBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+                
+                dotsEls.forEach((dot, idx) => {
+                    dot.addEventListener('click', () => showSlide(idx));
+                });
+
+                // Auto Play
+                setInterval(() => {
+                    showSlide(currentSlide + 1);
+                }, 5000);
+
+            } else {
+                // Fallback if no slides
+                if(slidesWrapper) slidesWrapper.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%; color:#aaa;">جاري إعداد شرائح العرض...</div>';
+            }
+        } catch (err) {
+            console.error('Error fetching sliders:', err);
         }
-        function changeSlide(n) {
-            currentSlide = (n + slides.length) % slides.length;
-            showSlide(currentSlide);
-        }
-        if (nextSlide && prevSlide) {
-            nextSlide.addEventListener('click', () => changeSlide(currentSlide + 1));
-            prevSlide.addEventListener('click', () => changeSlide(currentSlide - 1));
-        }
-        if(slides.length > 0) showSlide(currentSlide);
     }
 });
