@@ -1,5 +1,6 @@
+
 import React, { useRef, useState } from 'react';
-import { Image as ImageIcon, Upload, X } from 'lucide-react';
+import { Image as ImageIcon, Upload, X, Loader2 } from 'lucide-react';
 
 interface ImageUploaderProps {
   currentImage?: string;
@@ -10,6 +11,7 @@ interface ImageUploaderProps {
 const ImageUploader: React.FC<ImageUploaderProps> = ({ currentImage, onImageSelect, label = "صورة" }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -19,13 +21,49 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ currentImage, onImageSele
   };
 
   const processFile = (file: File) => {
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onImageSelect(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file || !file.type.startsWith('image/')) return;
+
+    setIsProcessing(true);
+
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+
+      // Optional: Resize if too large (e.g., max width 1920px)
+      const MAX_WIDTH = 1920;
+      if (width > MAX_WIDTH) {
+        height = Math.round((height * MAX_WIDTH) / width);
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Convert to WEBP with 0.8 quality (good balance of size/quality)
+        const webpDataUrl = canvas.toDataURL('image/webp', 0.8);
+        onImageSelect(webpDataUrl);
+      }
+      
+      // Cleanup
+      URL.revokeObjectURL(url);
+      setIsProcessing(false);
+    };
+
+    img.onerror = () => {
+      console.error("Error loading image for conversion");
+      setIsProcessing(false);
+    };
+
+    img.src = url;
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -79,16 +117,23 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ currentImage, onImageSele
         </div>
       ) : (
         <div
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => !isProcessing && fileInputRef.current?.click()}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+          className={`relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
             isDragging 
               ? 'border-primary-500 bg-primary-50' 
               : 'border-gray-300 hover:border-primary-500 hover:bg-gray-50'
           }`}
         >
+          {isProcessing && (
+            <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center z-10">
+              <Loader2 className="animate-spin text-primary-600 mb-2" size={32} />
+              <p className="text-sm font-semibold text-primary-700">جاري تحسين الصورة...</p>
+            </div>
+          )}
+          
           <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
             <ImageIcon size={32} />
           </div>
@@ -96,7 +141,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ currentImage, onImageSele
             انقر لرفع صورة أو اسحب الملف هنا
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            PNG, JPG, GIF حتى 5 ميجابايت
+            سيتم تحويل الصور تلقائياً إلى WebP لتحسين الأداء
           </p>
         </div>
       )}

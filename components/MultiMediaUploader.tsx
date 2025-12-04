@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 import { Upload, X, Image as ImageIcon, Film, FileVideo, Plus } from 'lucide-react';
 
@@ -39,7 +40,7 @@ const MultiMediaUploader: React.FC<MultiMediaUploaderProps> = ({ onFilesChange }
       // Basic validation
       let isValid = validTypes.includes(file.type);
 
-      // Fallback check for extensions if MIME type is missing or generic (common in some browsers/OS)
+      // Fallback check for extensions
       if (!isValid) {
         const ext = file.name.split('.').pop()?.toLowerCase();
         const validExts = ['jpg', 'jpeg', 'png', 'webp', 'mp4'];
@@ -55,18 +56,26 @@ const MultiMediaUploader: React.FC<MultiMediaUploaderProps> = ({ onFilesChange }
 
       const isVideo = file.type.startsWith('video/') || file.name.toLowerCase().endsWith('.mp4');
       
-      // Convert to Data URL
       try {
-        const url = await readFileAsDataURL(file);
+        let url = '';
+        
+        if (isVideo) {
+            // For videos, read directly as Data URL
+            url = await readFileAsDataURL(file);
+        } else {
+            // For images, convert to WebP
+            url = await convertImageToWebP(file);
+        }
+
         newFiles.push({
           id: Math.random().toString(36).substr(2, 9),
           type: isVideo ? 'video' : 'photo',
           url: url,
-          name: file.name,
+          name: isVideo ? file.name : file.name.replace(/\.[^/.]+$/, "") + ".webp", // Update ext
           file: file
         });
       } catch (error) {
-        console.error("Error reading file", file.name, error);
+        console.error("Error processing file", file.name, error);
       }
     }
 
@@ -82,6 +91,47 @@ const MultiMediaUploader: React.FC<MultiMediaUploaderProps> = ({ onFilesChange }
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(file);
+    });
+  };
+
+  // Helper: Convert Image to WebP using Canvas
+  const convertImageToWebP = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            // Resize max width to 1920px for optimization
+            const MAX_WIDTH = 1920;
+            if (width > MAX_WIDTH) {
+                height = Math.round((height * MAX_WIDTH) / width);
+                width = MAX_WIDTH;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                // 0.8 quality offers great compression with minimal visual loss
+                resolve(canvas.toDataURL('image/webp', 0.8));
+            } else {
+                reject(new Error('Canvas context failed'));
+            }
+            URL.revokeObjectURL(url);
+        };
+
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error('Image load failed'));
+        };
+
+        img.src = url;
     });
   };
 
@@ -113,8 +163,6 @@ const MultiMediaUploader: React.FC<MultiMediaUploaderProps> = ({ onFilesChange }
     e.preventDefault();
     e.stopPropagation();
     
-    // Check if the related target (mouse destination) is still inside the current component
-    // This prevents flickering when dragging over child elements
     if (e.currentTarget.contains(e.relatedTarget as Node)) {
       return;
     }
@@ -148,10 +196,10 @@ const MultiMediaUploader: React.FC<MultiMediaUploaderProps> = ({ onFilesChange }
         }`}
       >
         {isProcessing && (
-          <div className="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-10 rounded-lg">
+          <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10 rounded-lg">
             <div className="flex flex-col items-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mb-2"></div>
-                <p className="text-primary-600 font-bold">جاري معالجة الملفات...</p>
+                <p className="text-primary-600 font-bold">جاري تحويل الصور (WebP)...</p>
             </div>
           </div>
         )}
@@ -162,7 +210,7 @@ const MultiMediaUploader: React.FC<MultiMediaUploaderProps> = ({ onFilesChange }
           {isDragging ? 'أفلت الملفات هنا' : 'انقر لإضافة صور أو فيديو أو اسحب الملفات هنا'}
         </p>
         <p className="text-xs text-gray-500 mt-1">
-          JPG, PNG, WEBP, MP4 (يمكنك اختيار أكثر من ملف)
+          يتم تحويل الصور تلقائياً إلى WebP لتسريع الموقع
         </p>
       </div>
 
