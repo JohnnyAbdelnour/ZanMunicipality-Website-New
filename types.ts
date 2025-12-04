@@ -70,3 +70,25 @@ export interface SliderItem {
   sortOrder: number;
   active: boolean;
 }
+
+// User & Permissions
+export interface AppUser {
+  id: number;
+  username: string;
+  password?: string; // Optional for frontend display
+  full_name: string;
+  role: 'admin' | 'editor';
+  permissions: string[];
+}
+
+export const AVAILABLE_PERMISSIONS = [
+  { id: 'dashboard', label: 'لوحة القيادة' },
+  { id: 'homepage', label: 'واجهة الموقع' },
+  { id: 'news', label: 'الأخبار والمشاريع' },
+  { id: 'announcements', label: 'الاعلانات' },
+  { id: 'services', label: 'الخدمات والنماذج' },
+  { id: 'gallery', label: 'معرض الصور' },
+  { id: 'messages', label: 'الرسائل الواردة' },
+  { id: 'settings', label: 'إعدادات النظام' },
+  { id: 'users', label: 'إدارة المستخدمين' },
+];
