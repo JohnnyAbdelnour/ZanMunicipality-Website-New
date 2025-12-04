@@ -60,6 +60,15 @@ const Messagesbox: React.FC = () => {
     }
   };
 
+  const handleReply = () => {
+    if (!selectedMessage) return;
+
+    const subject = encodeURIComponent(`رد: ${selectedMessage.subject}`);
+    const body = encodeURIComponent(`\n\n\n----------------------------------------\nالرسالة الأصلية:\nمن: ${selectedMessage.name}\nالتاريخ: ${selectedMessage.date}\n\n${selectedMessage.message}`);
+    
+    window.location.href = `mailto:${selectedMessage.email}?subject=${subject}&body=${body}`;
+  };
+
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
        {/* Green Banner */}
@@ -165,7 +174,10 @@ const Messagesbox: React.FC = () => {
                         </div>
 
                         <div className="mt-8 pt-8 border-t border-gray-100">
-                            <button className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors">
+                            <button 
+                                onClick={handleReply}
+                                className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                            >
                                 <Reply size={18} />
                                 <span>رد على الرسالة</span>
                             </button>
