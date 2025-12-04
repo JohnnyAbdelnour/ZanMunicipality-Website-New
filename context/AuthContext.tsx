@@ -9,6 +9,7 @@ interface AuthContextType {
   logout: () => void;
   hasPermission: (module: string) => boolean;
   isLoading: boolean;
+  logoUrl: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,13 +17,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [logoUrl, setLogoUrl] = useState('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'); // Transparent placeholder
 
   useEffect(() => {
-    // Check local storage for session
+    // 1. Check local storage for session
     const storedUser = localStorage.getItem('zan_admin_user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    // 2. Fetch Logo from Settings
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase.from('settings').select('data').eq('id', 1).single();
+        if (data && data.data && data.data.logo) {
+          setLogoUrl(data.data.logo);
+        }
+      } catch (error) {
+        console.error("Error fetching logo settings:", error);
+      }
+    };
+    
+    fetchSettings();
     setIsLoading(false);
   }, []);
 
@@ -43,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, hasPermission, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, hasPermission, isLoading, logoUrl }}>
       {children}
     </AuthContext.Provider>
   );

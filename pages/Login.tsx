@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, logoUrl } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +42,8 @@ const Login: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4" dir="rtl">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
         <div className="bg-primary-700 p-8 text-center">
-          <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-             <img src="https://picsum.photos/80/80" className="rounded-full w-full h-full object-cover" alt="Logo" />
+          <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg p-2">
+             <img src={logoUrl} className="w-full h-full object-contain" alt="Logo" />
           </div>
           <h1 className="text-2xl font-bold text-white">بلدية زان</h1>
           <p className="text-primary-100 mt-2">نظام إدارة المحتوى</p>

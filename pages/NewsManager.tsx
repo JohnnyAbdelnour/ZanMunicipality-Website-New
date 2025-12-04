@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
@@ -96,7 +95,7 @@ const NewsManager: React.FC = () => {
       description: formData.description,
       category: formData.category,
       status: formData.status,
-      image_url: formData.imageUrl || 'https://picsum.photos/200/200'
+      image_url: formData.imageUrl || ''
     };
 
     let error;
@@ -189,7 +188,7 @@ const NewsManager: React.FC = () => {
                 {filteredItems.map(item => (
                     <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
-                        <img src={item.imageUrl} alt={item.title} className="w-16 h-12 object-cover rounded-md bg-gray-100" />
+                        <img src={item.imageUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} alt={item.title} className="w-16 h-12 object-cover rounded-md bg-gray-100" />
                     </td>
                     <td className="px-6 py-4">
                         <p className="font-semibold text-gray-800 line-clamp-1">{item.title}</p>

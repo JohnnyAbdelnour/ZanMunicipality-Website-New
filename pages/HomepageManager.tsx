@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
@@ -88,7 +87,7 @@ const HomepageManager: React.FC = () => {
     const payload = {
         title: formData.title,
         subtitle: formData.subtitle,
-        image_url: formData.imageUrl || 'https://picsum.photos/1200/600',
+        image_url: formData.imageUrl || '',
         link: formData.link,
         sort_order: formData.sortOrder,
         active: formData.active
@@ -137,7 +136,7 @@ const HomepageManager: React.FC = () => {
             {items.map(item => (
             <div key={item.id} className={`bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col ${item.active ? 'border-gray-100' : 'border-gray-200 opacity-75'}`}>
                 <div className="relative h-48 bg-gray-100">
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                    <img src={item.imageUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} alt={item.title} className="w-full h-full object-cover" />
                     <div className="absolute top-2 right-2 px-2 py-1 rounded text-xs font-bold bg-black bg-opacity-50 text-white flex items-center gap-1">
                         <Move size={12} />
                         ترتيب: {item.sortOrder}

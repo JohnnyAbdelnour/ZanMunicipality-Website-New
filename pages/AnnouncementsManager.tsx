@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
@@ -78,7 +77,7 @@ const AnnouncementsManager: React.FC = () => {
         date: formData.date,
         description: formData.description,
         priority: formData.priority,
-        image_url: formData.imageUrl || 'https://picsum.photos/200/200'
+        image_url: formData.imageUrl || ''
     };
 
     let error;
@@ -124,7 +123,7 @@ const AnnouncementsManager: React.FC = () => {
             {items.map(item => (
             <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
                 <div className="relative h-40 bg-gray-100">
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                    <img src={item.imageUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} alt={item.title} className="w-full h-full object-cover" />
                     <div className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-bold text-white flex items-center gap-1 ${item.priority === 'high' ? 'bg-red-500' : 'bg-blue-500'}`}>
                         {item.priority === 'high' ? <AlertTriangle size={12}/> : <CheckCircle2 size={12}/>}
                         {item.priority === 'high' ? 'هام جداً' : 'عادي'}

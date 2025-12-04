@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
@@ -82,7 +81,7 @@ const GalleryManager: React.FC = () => {
         .from('albums')
         .insert([{
             title: albumForm.title,
-            cover_url: albumForm.coverUrl || 'https://picsum.photos/400/300?grayscale',
+            cover_url: albumForm.coverUrl || '',
             date: new Date().toISOString().split('T')[0]
         }])
         .select()
@@ -215,7 +214,7 @@ const GalleryManager: React.FC = () => {
                 >
                 <div className="relative h-48 overflow-hidden">
                     <img 
-                    src={album.coverUrl} 
+                    src={album.coverUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} 
                     alt={album.title} 
                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
                     />

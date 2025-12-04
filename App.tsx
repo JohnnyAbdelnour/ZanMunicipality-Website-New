@@ -59,7 +59,7 @@ const SidebarItem = ({
 
 const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const location = useLocation();
-  const { logout, hasPermission, user } = useAuth();
+  const { logout, hasPermission, user, logoUrl } = useAuth();
 
   return (
     <>
@@ -78,8 +78,8 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       >
         <div className="flex items-center justify-center h-20 border-b border-gray-100 bg-primary-700">
             <div className="flex items-center gap-2 text-white">
-                <div className="bg-white p-1 rounded-full">
-                    <img src="https://picsum.photos/40/40" alt="Logo" className="w-8 h-8 rounded-full" />
+                <div className="bg-white p-1 rounded-lg">
+                    <img src={logoUrl} alt="Logo" className="w-8 h-8 object-contain" />
                 </div>
                 <h1 className="text-xl font-bold">بلدية زان</h1>
             </div>
@@ -201,7 +201,7 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
 };
 
 // --- Protected Route Component ---
-const ProtectedRoute = ({ children, module }: { children: React.ReactNode, module?: string }) => {
+const ProtectedRoute = ({ children, module }: { children?: React.ReactNode, module?: string }) => {
   const { user, isLoading, hasPermission } = useAuth();
 
   if (isLoading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div></div>;

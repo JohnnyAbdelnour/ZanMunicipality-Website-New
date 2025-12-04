@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { 
   Save, 
@@ -24,7 +23,7 @@ const Settings: React.FC = () => {
     address: 'شارع البلدية، زان، لبنان',
     facebook: 'https://www.facebook.com/zenmunicipality',
     instagram: 'https://www.instagram.com/zenmunicipality/',
-    logo: 'https://picsum.photos/200/200'
+    logo: ''
   });
 
   const [isLoading, setIsLoading] = useState(false);
