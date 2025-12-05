@@ -5,6 +5,36 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', async function () {
     
+    // --- Modal Logic (Initialize FIRST) ---
+    function setupModal() {
+        // Only append if not already exists
+        if(!document.getElementById('details-modal')) {
+            const modalHTML = `
+                <div id="details-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <img id="modal-img" class="modal-header-image" src="" alt="">
+                        <div class="modal-body">
+                            <p id="modal-date" style="color:#00796B; margin-bottom:10px; font-size:0.9rem; font-weight:bold;"></p>
+                            <h2 id="modal-title"></h2>
+                            <p id="modal-text"></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            const modal = document.getElementById('details-modal');
+            const closeBtn = modal.querySelector('.close-button');
+            
+            if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+            window.onclick = (e) => {
+                if (e.target == modal) modal.style.display = "none";
+            }
+        }
+    }
+    setupModal(); // Run immediately so elements exist for renderCards
+
     // --- Helper: Render Cards ---
     function renderCards(container, data, type) {
         if (!container) return;
@@ -40,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 titleHtml = `<a href="${link}" target="_blank" style="text-decoration:none; color:inherit;">${titleHtml}</a>`;
             }
             
+            // Note: Removed inline onclick to prevent syntax errors with quotes
             card.innerHTML = `
                 ${imageHtml}
                 <div class="card-content">
@@ -50,22 +81,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                 </div>
             `;
             
-            // Modal Event
-            const modal = document.getElementById('details-modal');
-            const modalImg = document.getElementById('modal-img');
-            const modalDate = document.getElementById('modal-date');
-            const modalTitle = document.getElementById('modal-title');
-            const modalText = document.getElementById('modal-text');
-
+            // Attach Event Listener Safely
             const btn = card.querySelector('.card-button');
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                modalImg.src = image;
-                modalTitle.textContent = title;
-                modalDate.textContent = date;
-                modalText.textContent = desc;
-                modal.style.display = "block";
-            });
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Fetch modal elements here to ensure they are found
+                    const modal = document.getElementById('details-modal');
+                    const modalImg = document.getElementById('modal-img');
+                    const modalDate = document.getElementById('modal-date');
+                    const modalTitle = document.getElementById('modal-title');
+                    const modalText = document.getElementById('modal-text');
+
+                    if (modal && modalImg && modalTitle && modalDate && modalText) {
+                        modalImg.src = image;
+                        modalTitle.textContent = title;
+                        modalDate.textContent = date;
+                        modalText.textContent = desc;
+                        modal.style.display = "block";
+                    } else {
+                        console.error('Modal elements not found');
+                        // Fallback
+                        alert(`${title}\n\n${desc}`);
+                    }
+                });
+            }
 
             container.appendChild(card);
         });
@@ -109,10 +149,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                     formsList.appendChild(li);
                 });
             }
-            renderServices(services);
+            if (services) renderServices(services);
             
             const formSearchInput = document.getElementById('form-search');
-            if (formSearchInput) {
+            if (formSearchInput && services) {
                 formSearchInput.addEventListener('input', function() {
                     const searchTerm = formSearchInput.value.toLowerCase();
                     const filtered = services.filter(s => s.title.toLowerCase().includes(searchTerm));
@@ -211,7 +251,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (projectsContainer && allNews) {
             const projectItems = allNews.filter(n => n.category === 'projects');
             renderCards(projectsContainer, projectItems, 'projects');
-            // Assuming projects might reuse news-search-input or have their own
             const projectSearch = document.getElementById('projects-search-input'); 
             if(projectSearch) setupSearch('projects-search-input', projectItems, projectsContainer, 'projects');
         }
@@ -259,16 +298,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                     galleryItem.setAttribute('data-title', item.description || album.title);
 
                     if (item.type === 'video') {
-                        // For video, usually lightbox libraries need specific handling or just link to file
-                        // Simple fallback: render a video tag or a placeholder image with play icon
                          galleryItem.innerHTML = `
                             <video src="${item.url}" style="width:100%; height:100%; object-fit:cover;"></video>
                             <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 5px black;">
                                 <i class="fas fa-play-circle"></i>
                             </div>
                         `;
-                        // Remove lightbox attr for video if library doesn't support it easily, 
-                        // or let it open raw. Here we keep it simple.
                         galleryItem.removeAttribute('data-lightbox');
                         galleryItem.target = "_blank"; // Open videos in new tab
                     } else {
@@ -435,35 +470,4 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
     await loadSettings();
-
-    // --- Modal Logic ---
-    function setupModal() {
-        // Only append if not already exists
-        if(!document.getElementById('details-modal')) {
-            const modalHTML = `
-                <div id="details-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-button">&times;</span>
-                        <img id="modal-img" class="modal-header-image" src="" alt="">
-                        <div class="modal-body">
-                            <p id="modal-date" style="color:#00796B; margin-bottom:10px; font-size:0.9rem; font-weight:bold;"></p>
-                            <h2 id="modal-title"></h2>
-                            <p id="modal-text"></p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-            const modal = document.getElementById('details-modal');
-            const closeBtn = modal.querySelector('.close-button');
-            
-            if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
-            window.onclick = (e) => {
-                if (e.target == modal) modal.style.display = "none";
-            }
-        }
-    }
-    setupModal();
-
 });
