@@ -10,9 +10,7 @@ import {
   EyeOff,
   Move,
   LayoutTemplate,
-  Link as LinkIcon,
-  Smartphone,
-  Monitor
+  Link as LinkIcon
 } from 'lucide-react';
 import { SliderItem } from '../types';
 import ImageUploader from '../components/ImageUploader';
@@ -25,7 +23,7 @@ const HomepageManager: React.FC = () => {
   const [editingItem, setEditingItem] = useState<SliderItem | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<SliderItem>>({
-      title: '', subtitle: '', imageUrl: '', mobileImageUrl: '', link: '', sortOrder: 0, active: true
+      title: '', subtitle: '', imageUrl: '', link: '', sortOrder: 0, active: true
   });
 
   useEffect(() => {
@@ -45,7 +43,6 @@ const HomepageManager: React.FC = () => {
         title: item.title,
         subtitle: item.subtitle,
         imageUrl: item.image_url,
-        mobileImageUrl: item.mobile_image_url, // Fetch mobile image
         link: item.link,
         sortOrder: item.sort_order,
         active: item.active
@@ -76,7 +73,6 @@ const HomepageManager: React.FC = () => {
         title: '',
         subtitle: '',
         imageUrl: '',
-        mobileImageUrl: '',
         link: '',
         sortOrder: items.length + 1,
         active: true
@@ -92,7 +88,6 @@ const HomepageManager: React.FC = () => {
         title: formData.title,
         subtitle: formData.subtitle,
         image_url: formData.imageUrl || '',
-        mobile_image_url: formData.mobileImageUrl || '', // Save mobile image
         link: formData.link,
         sort_order: formData.sortOrder,
         active: formData.active
@@ -140,33 +135,14 @@ const HomepageManager: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {items.map(item => (
             <div key={item.id} className={`bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col ${item.active ? 'border-gray-100' : 'border-gray-200 opacity-75'}`}>
-                <div className="relative h-48 bg-gray-100 flex">
-                     {/* Split view for desktop/mobile preview */}
-                    <div className="w-2/3 h-full border-l border-white relative group">
-                        <img src={item.imageUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} alt={item.title} className="w-full h-full object-cover" />
-                        <div className="absolute bottom-1 right-1 bg-black bg-opacity-60 text-white text-[10px] px-1 rounded flex items-center gap-1">
-                            <Monitor size={10} /> سطح المكتب
-                        </div>
-                    </div>
-                    <div className="w-1/3 h-full relative group bg-gray-200">
-                         {item.mobileImageUrl ? (
-                             <img src={item.mobileImageUrl} alt="Mobile" className="w-full h-full object-cover" />
-                         ) : (
-                             <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center p-1">
-                                نفس الصورة
-                             </div>
-                         )}
-                         <div className="absolute bottom-1 right-1 bg-black bg-opacity-60 text-white text-[10px] px-1 rounded flex items-center gap-1">
-                            <Smartphone size={10} /> جوال
-                        </div>
-                    </div>
-
+                <div className="relative h-48 bg-gray-100">
+                    <img src={item.imageUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} alt={item.title} className="w-full h-full object-cover" />
                     <div className="absolute top-2 right-2 px-2 py-1 rounded text-xs font-bold bg-black bg-opacity-50 text-white flex items-center gap-1">
                         <Move size={12} />
                         ترتيب: {item.sortOrder}
                     </div>
                     {!item.active && (
-                         <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center z-10">
+                         <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">
                             <span className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2">
                                 <EyeOff size={16} /> غير مفعل
                             </span>
@@ -211,7 +187,7 @@ const HomepageManager: React.FC = () => {
        {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-            <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center p-6 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-gray-800">
                          {editingItem ? 'تعديل الشريحة' : 'شريحة جديدة'}
@@ -278,36 +254,13 @@ const HomepageManager: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
-                        <div>
-                            <div className="flex items-center gap-2 mb-2 text-gray-700">
-                                <Monitor size={18} />
-                                <span className="font-bold">عرض سطح المكتب</span>
-                            </div>
-                            <ImageUploader 
-                                label="صورة أفقية (يفضل 1920x800)"
-                                currentImage={formData.imageUrl} 
-                                onImageSelect={(url) => setFormData({...formData, imageUrl: url})} 
-                            />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2 mb-2 text-gray-700">
-                                <Smartphone size={18} />
-                                <span className="font-bold">عرض الجوال</span>
-                                <span className="text-xs font-normal text-gray-400">(اختياري)</span>
-                            </div>
-                            <ImageUploader 
-                                label="صورة عمودية/مربعة (يفضل 800x800)"
-                                currentImage={formData.mobileImageUrl} 
-                                onImageSelect={(url) => setFormData({...formData, mobileImageUrl: url})} 
-                            />
-                             <p className="text-xs text-gray-400 mt-2">
-                                إذا لم يتم اختيار صورة للجوال، سيتم استخدام صورة سطح المكتب لجميع الأجهزة.
-                            </p>
-                        </div>
-                    </div>
+                    <ImageUploader 
+                      label="صورة الخلفية (يفضل حجم 1200x600)"
+                      currentImage={formData.imageUrl} 
+                      onImageSelect={(url) => setFormData({...formData, imageUrl: url})} 
+                    />
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-4">
+                    <div className="flex justify-end gap-3 pt-4">
                         <button 
                             type="button" 
                             onClick={() => setIsModalOpen(false)}
