@@ -23,7 +23,7 @@ const HomepageManager: React.FC = () => {
   const [editingItem, setEditingItem] = useState<SliderItem | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<SliderItem>>({
-      title: '', subtitle: '', imageUrl: '', link: '', sortOrder: 0, active: true
+      title: '', subtitle: '', imageUrl: '', mobileImageUrl: '', link: '', sortOrder: 0, active: true
   });
 
   useEffect(() => {
@@ -43,6 +43,7 @@ const HomepageManager: React.FC = () => {
         title: item.title,
         subtitle: item.subtitle,
         imageUrl: item.image_url,
+        mobileImageUrl: item.mobile_image_url,
         link: item.link,
         sortOrder: item.sort_order,
         active: item.active
@@ -73,6 +74,7 @@ const HomepageManager: React.FC = () => {
         title: '',
         subtitle: '',
         imageUrl: '',
+        mobileImageUrl: '',
         link: '',
         sortOrder: items.length + 1,
         active: true
@@ -88,6 +90,7 @@ const HomepageManager: React.FC = () => {
         title: formData.title,
         subtitle: formData.subtitle,
         image_url: formData.imageUrl || '',
+        mobile_image_url: formData.mobileImageUrl || '',
         link: formData.link,
         sort_order: formData.sortOrder,
         active: formData.active
@@ -258,6 +261,12 @@ const HomepageManager: React.FC = () => {
                       label="صورة الخلفية (يفضل حجم 1200x600)"
                       currentImage={formData.imageUrl} 
                       onImageSelect={(url) => setFormData({...formData, imageUrl: url})} 
+                    />
+
+                    <ImageUploader
+                      label="صورة الجوال (يفضل حجم 600x800)"
+                      currentImage={formData.mobileImageUrl}
+                      onImageSelect={(url) => setFormData({...formData, mobileImageUrl: url})}
                     />
 
                     <div className="flex justify-end gap-3 pt-4">
