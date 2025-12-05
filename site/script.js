@@ -277,26 +277,151 @@ document.addEventListener('DOMContentLoaded', async function () {
     // --- Slider Logic (Home Page) ---
     const sliderContainer = document.querySelector('.slider-container');
     if (sliderContainer) {
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        const nextSlide = document.querySelector('.next-slide');
-        const prevSlide = document.querySelector('.prev-slide');
-        let currentSlide = 0;
+        try {
+            // Fetch sliders from Supabase
+            const { data: slidersData, error } = await supabase
+                .from('sliders')
+                .select('*')
+                .eq('active', true)
+                .order('sort_order', { ascending: true });
 
-        function showSlide(n) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            slides[n].classList.add('active');
-            dots[n].classList.add('active');
+            if (slidersData && slidersData.length > 0) {
+                // Generate Slides HTML
+                const slidesWrapper = sliderContainer.querySelector('.slides') || document.createElement('div');
+                if (!sliderContainer.querySelector('.slides')) {
+                    slidesWrapper.className = 'slides';
+                    sliderContainer.prepend(slidesWrapper);
+                }
+
+                slidesWrapper.innerHTML = ''; // Clear existing hardcoded slides
+
+                // Generate Dots HTML
+                let dotsContainer = sliderContainer.querySelector('.slider-dots');
+                if (!dotsContainer) {
+                    dotsContainer = document.createElement('div');
+                    dotsContainer.className = 'slider-dots';
+                    sliderContainer.appendChild(dotsContainer);
+                }
+                dotsContainer.innerHTML = '';
+
+                slidersData.forEach((item, index) => {
+                    // Create Slide
+                    const slide = document.createElement('div');
+                    slide.className = `slide ${index === 0 ? 'active' : ''}`;
+
+                    const mobileImg = item.mobile_image_url || item.image_url;
+
+                    slide.innerHTML = `
+                        <picture>
+                            <source media="(max-width: 768px)" srcset="${mobileImg}">
+                            <img src="${item.image_url}" alt="${item.title}">
+                        </picture>
+                        <div class="slide-caption">
+                            <h2>${item.title}</h2>
+                            <p>${item.subtitle}</p>
+                            ${item.link ? `<a href="${item.link}" class="slide-link" style="display:inline-block; margin-top:10px; color:#fff; text-decoration:underline;">المزيد</a>` : ''}
+                        </div>
+                    `;
+                    slidesWrapper.appendChild(slide);
+
+                    // Create Dot
+                    const dot = document.createElement('span');
+                    dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                    dot.dataset.slide = index;
+                    dotsContainer.appendChild(dot);
+                });
+
+                // Initialize Interaction Logic
+                const slides = slidesWrapper.querySelectorAll('.slide');
+                const dots = dotsContainer.querySelectorAll('.dot');
+                const nextSlideBtn = sliderContainer.querySelector('.next-slide');
+                const prevSlideBtn = sliderContainer.querySelector('.prev-slide');
+                let currentSlide = 0;
+                let slideInterval;
+
+                function showSlide(n) {
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    dots.forEach(dot => dot.classList.remove('active'));
+
+                    // Handle wrap-around logic safely
+                    if (n >= slides.length) currentSlide = 0;
+                    else if (n < 0) currentSlide = slides.length - 1;
+                    else currentSlide = n;
+
+                    slides[currentSlide].classList.add('active');
+                    dots[currentSlide].classList.add('active');
+                }
+
+                function next() {
+                    showSlide(currentSlide + 1);
+                }
+
+                function prev() {
+                    showSlide(currentSlide - 1);
+                }
+
+                // Event Listeners
+                if (nextSlideBtn) {
+                     // Remove old listeners by cloning (simple trick) or just assigning onclick if simple
+                     const newNext = nextSlideBtn.cloneNode(true);
+                     nextSlideBtn.parentNode.replaceChild(newNext, nextSlideBtn);
+                     newNext.addEventListener('click', () => {
+                        next();
+                        resetInterval();
+                     });
+                }
+
+                if (prevSlideBtn) {
+                     const newPrev = prevSlideBtn.cloneNode(true);
+                     prevSlideBtn.parentNode.replaceChild(newPrev, prevSlideBtn);
+                     newPrev.addEventListener('click', () => {
+                        prev();
+                        resetInterval();
+                     });
+                }
+
+                dots.forEach((dot, idx) => {
+                    dot.addEventListener('click', () => {
+                        showSlide(idx);
+                        resetInterval();
+                    });
+                });
+
+                // Auto Play
+                function startInterval() {
+                    slideInterval = setInterval(next, 5000);
+                }
+
+                function resetInterval() {
+                    clearInterval(slideInterval);
+                    startInterval();
+                }
+
+                startInterval();
+
+            } else {
+                // If no data, render default static slides (if they exist in HTML) or handle empty state.
+                // Re-initialize basic logic for static slides if we didn't wipe them (we wipe them only if data > 0).
+                const slides = document.querySelectorAll('.slide');
+                if(slides.length > 0) {
+                     const dots = document.querySelectorAll('.dot');
+                     const nextSlide = document.querySelector('.next-slide');
+                     const prevSlide = document.querySelector('.prev-slide');
+                     let cs = 0;
+                     const change = (n) => {
+                         slides.forEach(s => s.classList.remove('active'));
+                         dots.forEach(d => d.classList.remove('active'));
+                         cs = (n + slides.length) % slides.length;
+                         slides[cs].classList.add('active');
+                         dots[cs].classList.add('active');
+                     }
+                     if (nextSlide) nextSlide.onclick = () => change(cs + 1);
+                     if (prevSlide) prevSlide.onclick = () => change(cs - 1);
+                }
+            }
+
+        } catch (e) {
+            console.error("Error loading slider:", e);
         }
-        function changeSlide(n) {
-            currentSlide = (n + slides.length) % slides.length;
-            showSlide(currentSlide);
-        }
-        if (nextSlide && prevSlide) {
-            nextSlide.addEventListener('click', () => changeSlide(currentSlide + 1));
-            prevSlide.addEventListener('click', () => changeSlide(currentSlide - 1));
-        }
-        if(slides.length > 0) showSlide(currentSlide);
     }
 });
