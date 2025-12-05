@@ -7,7 +7,8 @@ import {
   Trash2, 
   Filter,
   X,
-  Loader2
+  Loader2,
+  Link as LinkIcon
 } from 'lucide-react';
 import { NewsItem } from '../types';
 import ImageUploader from '../components/ImageUploader';
@@ -28,7 +29,8 @@ const NewsManager: React.FC = () => {
     description: '',
     category: 'news',
     status: 'draft',
-    imageUrl: ''
+    imageUrl: '',
+    link: ''
   });
 
   // Fetch Data
@@ -47,7 +49,8 @@ const NewsManager: React.FC = () => {
       // Map snake_case to camelCase
       const formattedData = data.map(item => ({
         ...item,
-        imageUrl: item.image_url
+        imageUrl: item.image_url,
+        link: item.link
       }));
       setItems(formattedData);
     }
@@ -80,7 +83,8 @@ const NewsManager: React.FC = () => {
         description: '',
         category: 'news',
         status: 'draft',
-        imageUrl: '' 
+        imageUrl: '',
+        link: ''
     });
     setIsModalOpen(true);
   };
@@ -95,7 +99,8 @@ const NewsManager: React.FC = () => {
       description: formData.description,
       category: formData.category,
       status: formData.status,
-      image_url: formData.imageUrl || ''
+      image_url: formData.imageUrl || '',
+      link: formData.link
     };
 
     let error;
@@ -191,8 +196,15 @@ const NewsManager: React.FC = () => {
                         <img src={item.imageUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'} alt={item.title} className="w-16 h-12 object-cover rounded-md bg-gray-100" />
                     </td>
                     <td className="px-6 py-4">
-                        <p className="font-semibold text-gray-800 line-clamp-1">{item.title}</p>
-                        <p className="text-xs text-gray-500 line-clamp-1">{item.description}</p>
+                        <div className="flex flex-col">
+                            <p className="font-semibold text-gray-800 line-clamp-1">{item.title}</p>
+                            <p className="text-xs text-gray-500 line-clamp-1">{item.description}</p>
+                            {item.link && (
+                                <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline flex items-center gap-1 mt-1">
+                                    <LinkIcon size={10} /> رابط خارجي
+                                </a>
+                            )}
+                        </div>
                     </td>
                     <td className="px-6 py-4">
                         <span className={`px-2 py-1 text-xs rounded-full ${
@@ -315,6 +327,18 @@ const NewsManager: React.FC = () => {
                             value={formData.description}
                             onChange={e => setFormData({...formData, description: e.target.value})}
                         ></textarea>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">رابط خارجي (اختياري)</label>
+                         <input 
+                            type="url" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white"
+                            value={formData.link || ''}
+                            onChange={e => setFormData({...formData, link: e.target.value})}
+                            placeholder="https://"
+                            dir="ltr"
+                        />
                     </div>
 
                     <ImageUploader 

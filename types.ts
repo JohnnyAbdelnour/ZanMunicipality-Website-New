@@ -9,6 +9,7 @@ export interface NewsItem {
   category: 'events' | 'projects' | 'news';
   imageUrl: string;
   status: 'published' | 'draft';
+  link?: string;
 }
 
 export interface Announcement {
@@ -69,6 +70,7 @@ export interface SliderItem {
   link?: string;
   sortOrder: number;
   active: boolean;
+  mobileImageUrl?: string;
 }
 
 // User & Permissions
