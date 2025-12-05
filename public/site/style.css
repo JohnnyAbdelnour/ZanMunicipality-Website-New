@@ -41,12 +41,15 @@ header {
     color: #333;
     padding: 20px 0;
     border-bottom: 1px solid #e0e0e0;
+    position: relative;
+    z-index: 100;
 }
 
 header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* Allow wrapping for mobile menu */
 }
 
 .logo-container {
@@ -64,6 +67,17 @@ header h1 {
     margin: 0;
     font-size: 28px;
     color: #00796B; /* Dark Green */
+}
+
+/* Menu Toggle Button */
+.menu-toggle {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #00796B;
+    padding: 5px;
 }
 
 /* Navigation */
@@ -90,12 +104,110 @@ nav a:hover {
     color: #009688; /* Lighter Green */
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .top-bar {
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    .top-bar .container {
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    header {
+        padding: 15px 0;
+    }
+
+    #logo {
+        height: 45px;
+        margin-left: 10px;
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
+
+    .menu-toggle {
+        display: block; /* Show hamburger on mobile */
+    }
+
+    nav {
+        display: none; /* Hide nav by default on mobile */
+        width: 100%;
+        margin-top: 15px;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 10px;
+    }
+
+    nav.active {
+        display: block; /* Show when active class is added */
+    }
+
+    nav ul li {
+        display: block; /* Stack items vertically */
+        margin: 0;
+        border-bottom: 1px solid #f9f9f9;
+    }
+
+    nav a {
+        display: block;
+        padding: 10px 0;
+        font-size: 16px;
+    }
+
+    .links-container {
+        flex-direction: column;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-section {
+        margin-bottom: 30px;
+    }
+    
+    .slider-container {
+        height: 300px; /* Smaller slider height on mobile */
+    }
+    
+    .slide-caption {
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0, 121, 107, 0.85);
+        padding: 15px;
+        border-radius: 0;
+        text-align: center;
+    }
+    
+    .slide-caption h2 {
+        font-size: 18px;
+    }
+    
+    .slide-caption p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
 /* Slider Styles */
 .slider-container {
     position: relative;
     width: 100%;
     height: 600px; /* Adjust height as needed */
     overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .slider-container {
+        height: 400px;
+    }
 }
 
 .slides {
@@ -370,14 +482,4 @@ footer {
     padding-top: 20px;
     border-top: 1px solid #555;
     font-size: 14px;
-}
-
-@media (max-width: 768px) {
-    .links-container {
-        flex-direction: column;
-    }
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
 }
