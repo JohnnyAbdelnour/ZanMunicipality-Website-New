@@ -66,6 +66,7 @@ export interface SliderItem {
   title: string;
   subtitle: string;
   imageUrl: string;
+  mobileImageUrl?: string; // Added for responsive design
   link?: string;
   sortOrder: number;
   active: boolean;
